@@ -3,12 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --primary-gold: #f7cd6f;
+  --primary-orange: #ff6b35;
   --primary-blue: #4767a7;
-  --secondary-gold: #eeb93c;
+  --secondary-orange: #ff8a50;
   --dark-blue: #2b3761;
-  --gradient-primary: linear-gradient(135deg, #f7cd6f 0%, #4767a7 100%);
-  --gradient-secondary: linear-gradient(135deg, #eeb93c 0%, #2b3761 100%);
+  --accent-orange: #e55100;
+  --gradient-primary: linear-gradient(135deg, #ff6b35 0%, #4767a7 100%);
+  --gradient-secondary: linear-gradient(135deg, #ff8a50 0%, #2b3761 100%);
 }
 
 @layer base {
@@ -35,7 +36,7 @@
   }
 
   .neon-glow {
-    box-shadow: 0 0 20px rgba(247, 205, 111, 0.3);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
   }
 
   .floating-animation {

@@ -2,96 +2,81 @@
 
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowRight, Calendar, MapPin, Users, Sparkles, Rocket, Code } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 
-export function Hero() {
+export default function Hero() {
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-[#2b3761] via-[#4767a7] to-[#2b3761] text-white overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-[#f7cd6f]/20 rounded-full blur-xl floating-animation"></div>
-        <div
-          className="absolute bottom-20 right-10 w-48 h-48 bg-[#eeb93c]/20 rounded-full blur-xl floating-animation"
-          style={{ animationDelay: "2s" }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/4 w-24 h-24 bg-[#f7cd6f]/30 rounded-full blur-lg floating-animation"
-          style={{ animationDelay: "4s" }}
-        ></div>
-        <div
-          className="absolute top-1/3 right-1/3 w-16 h-16 bg-[#eeb93c]/40 rounded-full blur-md floating-animation"
-          style={{ animationDelay: "1s" }}
-        ></div>
+    <section className="relative min-h-screen overflow-hidden">
+      {/* Clean gradient background similar to reference */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#8B4513] via-[#A0522D] to-[#CD853F]">
+        {/* Abstract geometric elements on the right */}
+        <div className="absolute inset-0">
+          <svg
+            className="absolute right-0 top-0 w-2/3 h-full"
+            viewBox="0 0 800 600"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <defs>
+              <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#ff6b35" stopOpacity="0.8" />
+                <stop offset="50%" stopColor="#ff4500" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#dc143c" stopOpacity="0.4" />
+              </linearGradient>
+            </defs>
+
+            {/* Flowing abstract shapes */}
+            <path d="M400 0 Q600 150 500 300 T700 500 L800 450 L800 0 Z" fill="url(#redGradient)" />
+            <path d="M300 100 Q550 200 400 350 T650 550 L800 500 L800 100 Z" fill="url(#redGradient)" opacity="0.7" />
+            <path d="M500 50 Q700 180 600 320 T800 480 L800 50 Z" fill="url(#redGradient)" opacity="0.5" />
+
+            {/* Additional geometric elements */}
+            <circle cx="650" cy="150" r="60" fill="#ff6b35" fillOpacity="0.3" />
+            <circle cx="700" cy="300" r="40" fill="#ff4500" fillOpacity="0.4" />
+            <circle cx="600" cy="400" r="80" fill="#dc143c" fillOpacity="0.2" />
+          </svg>
+        </div>
+
+        {/* Subtle overlay */}
+        <div className="absolute inset-0 bg-black/10"></div>
       </div>
 
-      <div className="relative container mx-auto px-4 py-32 pt-40">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
-              <Sparkles className="h-5 w-5 text-[#f7cd6f]" />
-              <span className="text-sm font-medium">حدث تمكين الشباب الأول في غرداية</span>
-            </div>
-
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
-              <span className="block text-[#f7cd6f]">تمكين</span>
-              <span className="block gradient-text">غرداية</span>
-              <span className="block text-white">2025</span>
+      {/* Content - Left aligned like reference */}
+      <div className="relative container mx-auto px-6 py-20 pt-32">
+        <div className="max-w-2xl">
+          <div className="space-y-8">
+            {/* Main Heading - Clean and bold */}
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+              الحدث الرائد لتمكين الشباب في الجزائر
+              <span className="block text-4xl md:text-5xl font-normal mt-4 text-white/90">- تمكين غرداية</span>
             </h1>
 
-            <p className="text-xl md:text-2xl mb-12 text-blue-100 max-w-4xl mx-auto leading-relaxed">
-              <span className="text-[#f7cd6f] font-bold text-2xl block mb-4">"إبنِ مستقبلك، واصنع أثرًا في مجتمعك"</span>
-              انضم إلى أشمل برنامج لتمكين الشباب في غرداية.
-              <span className="text-[#f7cd6f] font-semibold"> مساران متخصصان</span> في ريادة الأعمال والاستعداد للتوظيف.
+            {/* Description - Clean paragraph */}
+            <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-xl">
+              انضم إلى رواد الأعمال العالميين، مبتكري التكنولوجيا، وقادة الصناعة لاكتشاف الاتجاهات المتطورة
+              والاستراتيجيات والحلول التي تشكل المستقبل الرقمي للشباب الجزائري.
             </p>
 
-            <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
-              <div className="glass-effect rounded-2xl p-6 hover:neon-glow transition-all duration-300">
-                <Calendar className="h-8 w-8 text-[#f7cd6f] mb-3 mx-auto" />
-                <div className="text-lg font-semibold mb-1">22-29 أغسطس 2025</div>
-                <div className="text-blue-200 text-sm">الورشات التدريبية</div>
-              </div>
-              <div className="glass-effect rounded-2xl p-6 hover:neon-glow transition-all duration-300">
-                <MapPin className="h-8 w-8 text-[#f7cd6f] mb-3 mx-auto" />
-                <div className="text-lg font-semibold mb-1">غرداية، الجزائر</div>
-                <div className="text-blue-200 text-sm">ولاية غرداية</div>
-              </div>
-              <div className="glass-effect rounded-2xl p-6 hover:neon-glow transition-all duration-300">
-                <Users className="h-8 w-8 text-[#f7cd6f] mb-3 mx-auto" />
-                <div className="text-lg font-semibold mb-1">3 سبتمبر 2025</div>
-                <div className="text-blue-200 text-sm">المعرض والمسابقة</div>
-              </div>
-            </div>
+            {/* Event Details */}
+            <div className="text-xl md:text-2xl text-white font-medium">22 - 29 أغسطس، 2025، غرداية</div>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            {/* Single CTA Button like reference */}
+            <div className="pt-4">
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-to-r from-[#f7cd6f] to-[#eeb93c] text-[#2b3761] hover:shadow-2xl hover:scale-105 transition-all duration-300 font-bold text-lg px-8 py-4 rounded-full"
+                className="bg-[#ff6b35] hover:bg-[#ff4500] text-white font-bold text-lg px-12 py-6 rounded-none uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <Link href="/register-participant">
-                  <Rocket className="mr-2 h-5 w-5" />
-                  سجل الآن
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="border-2 border-[#f7cd6f] text-[#f7cd6f] hover:bg-[#f7cd6f] hover:text-[#2b3761] transition-all duration-300 font-bold text-lg px-8 py-4 rounded-full"
-              >
-                <Link href="/about">
-                  <Code className="mr-2 h-5 w-5" />
-                  اعرف المزيد
+                <Link href="/register-participant" className="flex items-center gap-3">
+                  احجز تذكرتك
+                  <ArrowLeft className="h-5 w-5" />
                 </Link>
               </Button>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Geometric Shapes */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent"></div>
     </section>
   )
 }

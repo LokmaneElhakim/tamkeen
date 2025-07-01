@@ -1,70 +1,69 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowRight, MessageCircle, Rocket, Sparkles } from "lucide-react"
+import { ArrowRight, Calendar, Users, Trophy } from "lucide-react"
 
 export function CallToAction() {
   return (
-    <section className="py-20 bg-gradient-to-br from-[#2b3761] via-[#4767a7] to-[#2b3761] text-white relative overflow-hidden">
-      {/* Background Elements */}
+    <section className="py-24 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white relative overflow-hidden">
+      {/* Background Elements with gradient colors */}
       <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-[#f7cd6f]/10 rounded-full blur-xl floating-animation"></div>
-        <div
-          className="absolute bottom-10 right-10 w-48 h-48 bg-[#eeb93c]/10 rounded-full blur-xl floating-animation"
-          style={{ animationDelay: "2s" }}
-        ></div>
+        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-br from-[#ff6b35]/15 via-[#ff8a50]/10 to-[#4767a7]/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-br from-[#4767a7]/15 via-[#2b3761]/10 to-[#ff6b35]/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-to-br from-[#ff8a50]/10 via-[#4767a7]/8 to-[#2b3761]/5 rounded-full blur-2xl"></div>
       </div>
 
-      <div className="relative container mx-auto px-4 text-center">
-        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
-          <Sparkles className="h-5 w-5 text-[#f7cd6f]" />
-          <span className="font-semibold">انضم إلى الحركة</span>
-        </div>
+      <div className="relative container mx-auto px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            ابدأ رحلتك مع{" "}
+            <span className="bg-gradient-to-r from-[#ff6b35] via-[#ff8a50] to-[#4767a7] bg-clip-text text-transparent">
+              تمكين
+            </span>
+          </h2>
+          <p className="text-xl text-slate-300 mb-12 leading-relaxed">
+            انضم إلى مئات الشباب الطموح في غرداية واكتسب المهارات والخبرات التي تحتاجها لبناء مستقبل مهني ناجح. أماكن
+            محدودة متاحة.
+          </p>
 
-        <h2 className="text-4xl md:text-5xl font-bold mb-6">
-          مستعد لتحويل <span className="text-[#f7cd6f]">مستقبلك؟</span>
-        </h2>
-        <p className="text-xl mb-12 max-w-3xl mx-auto text-blue-100 leading-relaxed">
-          لا تفوت هذه الفرصة لتكون جزءاً من أكبر مبادرة لتمكين الشباب في غرداية.
-          <span className="text-[#f7cd6f] font-semibold"> أماكن محدودة متاحة</span> لـ 8 جلسات مكثفة.
-        </p>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-[#ff6b35] via-[#ff8a50] to-[#4767a7] hover:from-[#ff8a50] hover:via-[#4767a7] hover:to-[#2b3761] text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <Link href="/register-participant">
+                سجل الآن - أماكن محدودة
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
 
-        <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
-          <Button
-            asChild
-            size="lg"
-            className="bg-gradient-to-r from-[#f7cd6f] to-[#eeb93c] text-[#2b3761] hover:shadow-2xl hover:scale-105 transition-all duration-300 font-bold text-lg px-8 py-4 rounded-full"
-          >
-            <Link href="/register-participant">
-              <Rocket className="mr-2 h-5 w-5" />
-              سجل الآن
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="border-2 border-[#f7cd6f] text-[#f7cd6f] hover:bg-[#f7cd6f] hover:text-[#2b3761] transition-all duration-300 font-bold text-lg px-8 py-4 rounded-full"
-          >
-            <a href="https://wa.me/213XXXXXXXXX" target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="mr-2 h-5 w-5" />
-              انضم لمجموعة واتساب
-            </a>
-          </Button>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <div className="glass-effect rounded-2xl p-6 hover:neon-glow transition-all duration-300">
-            <div className="text-2xl font-bold text-[#f7cd6f] mb-2">500+</div>
-            <div className="text-sm text-blue-200">مشارك متوقع</div>
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="border-2 border-white/30 text-white hover:bg-gradient-to-r hover:from-[#ff6b35]/10 hover:to-[#4767a7]/10 font-semibold px-8 py-4 rounded-full backdrop-blur-sm bg-transparent"
+            >
+              <Link href="/about">اعرف المزيد</Link>
+            </Button>
           </div>
-          <div className="glass-effect rounded-2xl p-6 hover:neon-glow transition-all duration-300">
-            <div className="text-2xl font-bold text-[#f7cd6f] mb-2">8</div>
-            <div className="text-sm text-blue-200">جلسات مكثفة</div>
-          </div>
-          <div className="glass-effect rounded-2xl p-6 hover:neon-glow transition-all duration-300">
-            <div className="text-2xl font-bold text-[#f7cd6f] mb-2">3</div>
-            <div className="text-sm text-blue-200">أيام من الابتكار</div>
+
+          {/* Quick Stats */}
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <Calendar className="h-8 w-8 text-[#ff8a50] mx-auto mb-3" />
+              <div className="text-2xl font-bold mb-1">8 أيام</div>
+              <div className="text-slate-400">من التدريب المكثف</div>
+            </div>
+            <div className="text-center">
+              <Users className="h-8 w-8 text-[#4767a7] mx-auto mb-3" />
+              <div className="text-2xl font-bold mb-1">500+ مشارك</div>
+              <div className="text-slate-400">من مختلف التخصصات</div>
+            </div>
+            <div className="text-center">
+              <Trophy className="h-8 w-8 text-[#ff6b35] mx-auto mb-3" />
+              <div className="text-2xl font-bold mb-1">25+ شركة</div>
+              <div className="text-slate-400">تقدم فرص عمل</div>
+            </div>
           </div>
         </div>
       </div>
