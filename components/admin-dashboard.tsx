@@ -1,18 +1,37 @@
-"use client"
+"use client";
 
-import { useState, useMemo, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
-import { SidebarInset } from "@/components/ui/sidebar"
-import { AdminSidebar, AdminSidebarProvider } from "./admin-sidebar"
+import { useState, useMemo, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { SidebarInset } from "@/components/ui/sidebar";
+import { AdminSidebar, AdminSidebarProvider } from "./admin-sidebar";
 import {
   Users,
   Download,
@@ -28,15 +47,20 @@ import {
   UserPlus,
   Calendar,
   Building2,
-} from "lucide-react"
-import { toast } from "@/hooks/use-toast"
+} from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 // Import database services
-import { participantsService, mentorsService, sessionsService, companiesService } from "@/lib/database"
-import type { Participant, Mentor, Session, Company } from "@/lib/supabase"
+import {
+  participantsService,
+  mentorsService,
+  sessionsService,
+  companiesService,
+} from "@/lib/database";
+import type { Participant, Mentor, Session, Company } from "@/lib/supabase";
 
 // Import the DatabaseTest component
-import { DatabaseTest } from "./database-test"
+import { DatabaseTest } from "./database-test";
 
 // Default program data structure
 const defaultTamkeenProgram = {
@@ -45,31 +69,34 @@ const defaultTamkeenProgram = {
   dates: "22-29 أغسطس 2025",
   daily_time: "17:00 - 22:00",
   days: [],
-}
+};
 
 // Import the Tamkeen program data with fallback
-let tamkeenProgram = defaultTamkeenProgram
+let tamkeenProgram = defaultTamkeenProgram;
 try {
-  tamkeenProgram = require("../data/tamkeen-program.json")
+  tamkeenProgram = require("../data/tamkeen-program.json");
 } catch (error) {
-  console.warn("Could not load tamkeen-program.json, using default data:", error)
+  console.warn(
+    "Could not load tamkeen-program.json, using default data:",
+    error
+  );
 }
 
 // Extract course content from the JSON structure with safety checks
 const extractCourseContent = () => {
-  const courses = []
+  const courses = [];
 
   // Safety check for days array
   if (!tamkeenProgram?.days || !Array.isArray(tamkeenProgram.days)) {
-    console.warn("tamkeenProgram.days is not available or not an array")
-    return []
+    console.warn("tamkeenProgram.days is not available or not an array");
+    return [];
   }
 
   tamkeenProgram.days.forEach((day, index) => {
     // Safety check for day object
     if (!day || typeof day !== "object") {
-      console.warn(`Day ${index} is not a valid object`)
-      return
+      console.warn(`Day ${index} is not a valid object`);
+      return;
     }
 
     // Add main day content
@@ -78,9 +105,11 @@ const extractCourseContent = () => {
       title: day.title || `اليوم ${day.day || index + 1}`,
       type: "main",
       day: day.day || index + 1,
-      content: day.content || `اليوم ${day.day || index + 1}: ${day.title || "بدون عنوان"}`,
+      content:
+        day.content ||
+        `اليوم ${day.day || index + 1}: ${day.title || "بدون عنوان"}`,
       objective: day.objective || "",
-    })
+    });
 
     // Add entrepreneurship specific content
     if (day.entrepreneurship && Array.isArray(day.entrepreneurship)) {
@@ -92,8 +121,8 @@ const extractCourseContent = () => {
           day: day.day || index + 1,
           content: topic,
           parentTitle: day.title || "",
-        })
-      })
+        });
+      });
     }
 
     // Add employment specific content
@@ -106,8 +135,8 @@ const extractCourseContent = () => {
           day: day.day || index + 1,
           content: topic,
           parentTitle: day.title || "",
-        })
-      })
+        });
+      });
     }
 
     // Add shared content
@@ -120,40 +149,41 @@ const extractCourseContent = () => {
           day: day.day || index + 1,
           content: topic,
           parentTitle: day.title || "",
-        })
-      })
+        });
+      });
     }
-  })
+  });
 
-  return courses
-}
+  return courses;
+};
 
-const TAMKEEN_COURSES = extractCourseContent()
+const TAMKEEN_COURSES = extractCourseContent();
 
 export function AdminDashboard() {
   // State for data
-  const [participants, setParticipants] = useState<Participant[]>([])
-  const [mentors, setMentors] = useState<Mentor[]>([])
-  const [sessions, setSessions] = useState<Session[]>([])
-  const [companies, setCompanies] = useState<Company[]>([])
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
 
   // Loading states
-  const [loading, setLoading] = useState(true)
-  const [participantsLoading, setParticipantsLoading] = useState(false)
-  const [mentorsLoading, setMentorsLoading] = useState(false)
-  const [sessionsLoading, setSessionsLoading] = useState(false)
-  const [companiesLoading, setCompaniesLoading] = useState(false)
+  const [loading, setLoading] = useState(true);
+  const [participantsLoading, setParticipantsLoading] = useState(false);
+  const [mentorsLoading, setMentorsLoading] = useState(false);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [companiesLoading, setCompaniesLoading] = useState(false);
 
   // UI state
-  const [showScanner, setShowScanner] = useState(false)
-  const [editingParticipant, setEditingParticipant] = useState<Participant | null>(null)
-  const [editingMentor, setEditingMentor] = useState<Mentor | null>(null)
-  const [editingSession, setEditingSession] = useState<Session | null>(null)
-  const [addingParticipant, setAddingParticipant] = useState(false)
-  const [addingMentor, setAddingMentor] = useState(false)
-  const [addingSession, setAddingSession] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [activeView, setActiveView] = useState("dashboard")
+  const [showScanner, setShowScanner] = useState(false);
+  const [editingParticipant, setEditingParticipant] =
+    useState<Participant | null>(null);
+  const [editingMentor, setEditingMentor] = useState<Mentor | null>(null);
+  const [editingSession, setEditingSession] = useState<Session | null>(null);
+  const [addingParticipant, setAddingParticipant] = useState(false);
+  const [addingMentor, setAddingMentor] = useState(false);
+  const [addingSession, setAddingSession] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeView, setActiveView] = useState("dashboard");
 
   const [newParticipant, setNewParticipant] = useState({
     name: "",
@@ -163,7 +193,7 @@ export function AdminDashboard() {
     track: "",
     group: "",
     attended_sessions: [] as number[],
-  })
+  });
 
   const [newMentor, setNewMentor] = useState({
     name: "",
@@ -172,7 +202,7 @@ export function AdminDashboard() {
     specialties: [] as string[],
     availability: [] as string[],
     bio: "",
-  })
+  });
 
   const [newSession, setNewSession] = useState({
     title: "",
@@ -183,97 +213,115 @@ export function AdminDashboard() {
     course_id: "",
     group: "",
     location: "",
-  })
+  });
 
   // Load initial data
   useEffect(() => {
-    loadAllData()
-  }, [])
+    loadAllData();
+  }, []);
 
   const loadAllData = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      console.log("Loading data from database...")
+      console.log("Loading data from database...");
 
-      const [participantsData, mentorsData, sessionsData, companiesData] = await Promise.all([
-        participantsService.getAll().catch((err) => {
-          console.error("Failed to load participants:", err)
-          toast({
-            title: "خطأ في تحميل المشاركين",
-            description: err.message || "حدث خطأ أثناء تحميل بيانات المشاركين",
-            variant: "destructive",
-          })
-          return []
-        }),
-        mentorsService.getAll().catch((err) => {
-          console.error("Failed to load mentors:", err)
-          toast({
-            title: "خطأ في تحميل المدربين",
-            description: err.message || "حدث خطأ أثناء تحميل بيانات المدربين",
-            variant: "destructive",
-          })
-          return []
-        }),
-        sessionsService.getAll().catch((err) => {
-          console.error("Failed to load sessions:", err)
-          toast({
-            title: "خطأ في تحميل الجلسات",
-            description: err.message || "حدث خطأ أثناء تحميل بيانات الجلسات",
-            variant: "destructive",
-          })
-          return []
-        }),
-        companiesService.getAll().catch((err) => {
-          console.error("Failed to load companies:", err)
-          toast({
-            title: "خطأ في تحميل الشركات",
-            description: err.message || "حدث خطأ أثناء تحميل بيانات الشركات",
-            variant: "destructive",
-          })
-          return []
-        }),
-      ])
+      const [participantsData, mentorsData, sessionsData, companiesData] =
+        await Promise.all([
+          participantsService.getAll().catch((err) => {
+            console.error("Failed to load participants:", err);
+            toast({
+              title: "خطأ في تحميل المشاركين",
+              description:
+                err.message || "حدث خطأ أثناء تحميل بيانات المشاركين",
+              variant: "destructive",
+            });
+            return [];
+          }),
+          mentorsService.getAll().catch((err) => {
+            console.error("Failed to load mentors:", err);
+            toast({
+              title: "خطأ في تحميل المدربين",
+              description: err.message || "حدث خطأ أثناء تحميل بيانات المدربين",
+              variant: "destructive",
+            });
+            return [];
+          }),
+          sessionsService.getAll().catch((err) => {
+            console.error("Failed to load sessions:", err);
+            toast({
+              title: "خطأ في تحميل الجلسات",
+              description: err.message || "حدث خطأ أثناء تحميل بيانات الجلسات",
+              variant: "destructive",
+            });
+            return [];
+          }),
+          companiesService.getAll().catch((err) => {
+            console.error("Failed to load companies:", err);
+            toast({
+              title: "خطأ في تحميل الشركات",
+              description: err.message || "حدث خطأ أثناء تحميل بيانات الشركات",
+              variant: "destructive",
+            });
+            return [];
+          }),
+        ]);
 
       console.log("Loaded data:", {
         participants: participantsData.length,
         mentors: mentorsData.length,
         sessions: sessionsData.length,
         companies: companiesData.length,
-      })
+      });
 
-      setParticipants(participantsData)
-      setMentors(mentorsData)
-      setSessions(sessionsData)
-      setCompanies(companiesData)
+      setParticipants(participantsData);
+      setMentors(mentorsData);
+      setSessions(sessionsData);
+      setCompanies(companiesData);
 
-      if (participantsData.length === 0 && mentorsData.length === 0 && sessionsData.length === 0) {
+      if (
+        participantsData.length === 0 &&
+        mentorsData.length === 0 &&
+        sessionsData.length === 0
+      ) {
         toast({
           title: "قاعدة البيانات فارغة",
-          description: "لا توجد بيانات حالياً. ابدأ بإضافة المشاركين والمدربين.",
-        })
+          description:
+            "لا توجد بيانات حالياً. ابدأ بإضافة المشاركين والمدربين.",
+        });
       }
     } catch (error) {
-      console.error("Error loading data:", error)
+      console.error("Error loading data:", error);
       toast({
         title: "خطأ في تحميل البيانات",
-        description: "حدث خطأ أثناء تحميل البيانات من قاعدة البيانات. تحقق من اتصال الإنترنت والمحاولة مرة أخرى.",
+        description:
+          "حدث خطأ أثناء تحميل البيانات من قاعدة البيانات. تحقق من اتصال الإنترنت والمحاولة مرة أخرى.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // Analytics calculations
   const analytics = useMemo(() => {
-    const totalSessions = 8 // Based on Tamkeen program
-    const onTrackParticipants = participants.filter((p) => p.attended_sessions.length >= 6).length
-    const atRiskParticipants = participants.filter((p) => p.attended_sessions.length === 1).length
+    const totalSessions = 8; // Based on Tamkeen program
+    const onTrackParticipants = participants.filter(
+      (p) => p.attended_sessions.length >= 6
+    ).length;
+    const atRiskParticipants = participants.filter(
+      (p) => p.attended_sessions.length === 1
+    ).length;
     const excludedParticipants = participants.filter(
-      (p) => p.attended_sessions.length >= 2 && p.attended_sessions.length < 6,
-    ).length
-    const totalAttendance = participants.reduce((sum, p) => sum + p.attended_sessions.length, 0)
-    const attendanceRate = participants.length > 0 ? (totalAttendance / (participants.length * totalSessions)) * 100 : 0
+      (p) => p.attended_sessions.length >= 2 && p.attended_sessions.length < 6
+    ).length;
+    const totalAttendance = participants.reduce(
+      (sum, p) => sum + p.attended_sessions.length,
+      0
+    );
+    const attendanceRate =
+      participants.length > 0
+        ? (totalAttendance / (participants.length * totalSessions)) * 100
+        : 0;
 
     return {
       totalParticipants: participants.length,
@@ -283,53 +331,63 @@ export function AdminDashboard() {
       atRiskParticipants,
       excludedParticipants,
       attendanceRate: Math.round(attendanceRate),
-      upcomingSessions: sessions.filter((s) => new Date(s.date) >= new Date()).length,
-    }
-  }, [participants, mentors, sessions])
+      upcomingSessions: sessions.filter((s) => new Date(s.date) >= new Date())
+        .length,
+    };
+  }, [participants, mentors, sessions]);
 
   // QR Code scanning
   const handleQRScan = async (qrCode: string) => {
     try {
-      const participant = await participantsService.findByQRCode(qrCode)
+      const participant = await participantsService.findByQRCode(qrCode);
       if (participant) {
-        const currentSessionIndex = 1 // This would be dynamic based on current session
+        const currentSessionIndex = 1; // This would be dynamic based on current session
         if (!participant.attended_sessions.includes(currentSessionIndex)) {
-          const updatedSessions = [...participant.attended_sessions, currentSessionIndex]
-          await participantsService.update(participant.id, { attended_sessions: updatedSessions })
+          const updatedSessions = [
+            ...participant.attended_sessions,
+            currentSessionIndex,
+          ];
+          await participantsService.update(participant.id, {
+            attended_sessions: updatedSessions,
+          });
 
           // Update local state
           setParticipants((prev) =>
-            prev.map((p) => (p.id === participant.id ? { ...p, attended_sessions: updatedSessions } : p)),
-          )
+            prev.map((p) =>
+              p.id === participant.id
+                ? { ...p, attended_sessions: updatedSessions }
+                : p
+            )
+          );
 
           toast({
             title: "تم تسجيل الحضور",
             description: `تم تسجيل حضور ${participant.name} بنجاح`,
-          })
+          });
         } else {
           toast({
             title: "تم التسجيل مسبقاً",
             description: `${participant.name} مسجل الحضور لهذه الجلسة مسبقاً`,
             variant: "destructive",
-          })
+          });
         }
       } else {
         toast({
           title: "رمز QR غير صحيح",
           description: "لم يتم العثور على مشارك بهذا الرمز",
           variant: "destructive",
-        })
+        });
       }
     } catch (error) {
-      console.error("Error scanning QR:", error)
+      console.error("Error scanning QR:", error);
       toast({
         title: "خطأ في المسح",
         description: "حدث خطأ أثناء مسح رمز QR",
         variant: "destructive",
-      })
+      });
     }
-    setShowScanner(false)
-  }
+    setShowScanner(false);
+  };
 
   // Export to CSV
   const exportToCSV = (data: any[], filename: string) => {
@@ -338,46 +396,56 @@ export function AdminDashboard() {
         title: "لا توجد بيانات للتصدير",
         description: "لا توجد بيانات متاحة للتصدير",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    const csv = [Object.keys(data[0]).join(","), ...data.map((row) => Object.values(row).join(","))].join("\n")
-    const blob = new Blob([csv], { type: "text/csv" })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = filename
-    a.click()
+    const csv = [
+      Object.keys(data[0]).join(","),
+      ...data.map((row) => Object.values(row).join(",")),
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
 
     toast({
       title: "تم التصدير بنجاح",
       description: `تم تصدير ${data.length} سجل إلى ${filename}`,
-    })
-  }
+    });
+  };
 
   // Participant operations
   const handleAddParticipant = async () => {
-    if (!newParticipant.name || !newParticipant.email || !newParticipant.track || !newParticipant.group) {
+    if (
+      !newParticipant.name ||
+      !newParticipant.email ||
+      !newParticipant.track ||
+      !newParticipant.group
+    ) {
       toast({
         title: "بيانات ناقصة",
         description: "يرجى ملء جميع الحقول المطلوبة",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setParticipantsLoading(true)
+    setParticipantsLoading(true);
     try {
-      const qrCode = `TMK${String(participants.length + 1).padStart(3, "0")}`
+      const qrCode = `TMK${String(participants.length + 1).padStart(3, "0")}`;
       const participantData = {
         ...newParticipant,
         age: Number.parseInt(newParticipant.age) || null,
         qr_code: qrCode,
-      }
+      };
 
-      const newParticipantRecord = await participantsService.create(participantData)
-      setParticipants((prev) => [newParticipantRecord, ...prev])
+      const newParticipantRecord = await participantsService.create(
+        participantData
+      );
+      setParticipants((prev) => [newParticipantRecord, ...prev]);
 
       setNewParticipant({
         name: "",
@@ -387,73 +455,87 @@ export function AdminDashboard() {
         track: "",
         group: "",
         attended_sessions: [],
-      })
-      setAddingParticipant(false)
+      });
+      setAddingParticipant(false);
 
       toast({
         title: "تم إضافة المشارك",
         description: `تم إضافة ${newParticipantRecord.name} بنجاح`,
-      })
+      });
     } catch (error) {
-      console.error("Error adding participant:", error)
+      console.error("Error adding participant:", error);
       toast({
         title: "خطأ في الإضافة",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء إضافة المشارك",
+        description:
+          error instanceof Error
+            ? error.message
+            : "حدث خطأ أثناء إضافة المشارك",
         variant: "destructive",
-      })
+      });
     } finally {
-      setParticipantsLoading(false)
+      setParticipantsLoading(false);
     }
-  }
+  };
 
   const handleUpdateParticipant = async () => {
-    if (!editingParticipant) return
+    if (!editingParticipant) return;
 
-    setParticipantsLoading(true)
+    setParticipantsLoading(true);
     try {
-      const updatedParticipant = await participantsService.update(editingParticipant.id, editingParticipant)
-      setParticipants((prev) => prev.map((p) => (p.id === updatedParticipant.id ? updatedParticipant : p)))
-      setEditingParticipant(null)
+      const updatedParticipant = await participantsService.update(
+        editingParticipant.id,
+        editingParticipant
+      );
+      setParticipants((prev) =>
+        prev.map((p) =>
+          p.id === updatedParticipant.id ? updatedParticipant : p
+        )
+      );
+      setEditingParticipant(null);
 
       toast({
         title: "تم تحديث المشارك",
         description: `تم تحديث بيانات ${updatedParticipant.name} بنجاح`,
-      })
+      });
     } catch (error) {
-      console.error("Error updating participant:", error)
+      console.error("Error updating participant:", error);
       toast({
         title: "خطأ في التحديث",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء تحديث بيانات المشارك",
+        description:
+          error instanceof Error
+            ? error.message
+            : "حدث خطأ أثناء تحديث بيانات المشارك",
         variant: "destructive",
-      })
+      });
     } finally {
-      setParticipantsLoading(false)
+      setParticipantsLoading(false);
     }
-  }
+  };
 
   const handleDeleteParticipant = async (id: number) => {
-    if (!confirm("هل أنت متأكد من حذف هذا المشارك؟")) return
+    if (!confirm("هل أنت متأكد من حذف هذا المشارك؟")) return;
 
-    setParticipantsLoading(true)
+    setParticipantsLoading(true);
     try {
-      await participantsService.delete(id)
-      setParticipants((prev) => prev.filter((p) => p.id !== id))
+      await participantsService.delete(id);
+      setParticipants((prev) => prev.filter((p) => p.id !== id));
 
       toast({
         title: "تم حذف المشارك",
         description: "تم حذف المشارك بنجاح",
-      })
+      });
     } catch (error) {
-      console.error("Error deleting participant:", error)
+      console.error("Error deleting participant:", error);
       toast({
         title: "خطأ في الحذف",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء حذف المشارك",
+        description:
+          error instanceof Error ? error.message : "حدث خطأ أثناء حذف المشارك",
         variant: "destructive",
-      })
+      });
     } finally {
-      setParticipantsLoading(false)
+      setParticipantsLoading(false);
     }
-  }
+  };
 
   // Mentor operations
   const handleAddMentor = async () => {
@@ -462,14 +544,14 @@ export function AdminDashboard() {
         title: "بيانات ناقصة",
         description: "يرجى ملء الاسم ورقم الهاتف على الأقل",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setMentorsLoading(true)
+    setMentorsLoading(true);
     try {
-      const newMentorRecord = await mentorsService.create(newMentor)
-      setMentors((prev) => [newMentorRecord, ...prev])
+      const newMentorRecord = await mentorsService.create(newMentor);
+      setMentors((prev) => [newMentorRecord, ...prev]);
 
       setNewMentor({
         name: "",
@@ -478,94 +560,109 @@ export function AdminDashboard() {
         specialties: [],
         availability: [],
         bio: "",
-      })
-      setAddingMentor(false)
+      });
+      setAddingMentor(false);
 
       toast({
         title: "تم إضافة المدرب",
         description: `تم إضافة ${newMentorRecord.name} بنجاح`,
-      })
+      });
     } catch (error) {
-      console.error("Error adding mentor:", error)
+      console.error("Error adding mentor:", error);
       toast({
         title: "خطأ في الإضافة",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء إضافة المدرب",
+        description:
+          error instanceof Error ? error.message : "حدث خطأ أثناء إضافة المدرب",
         variant: "destructive",
-      })
+      });
     } finally {
-      setMentorsLoading(false)
+      setMentorsLoading(false);
     }
-  }
+  };
 
   const handleUpdateMentor = async () => {
-    if (!editingMentor) return
+    if (!editingMentor) return;
 
-    setMentorsLoading(true)
+    setMentorsLoading(true);
     try {
-      const updatedMentor = await mentorsService.update(editingMentor.id, editingMentor)
-      setMentors((prev) => prev.map((m) => (m.id === updatedMentor.id ? updatedMentor : m)))
-      setEditingMentor(null)
+      const updatedMentor = await mentorsService.update(
+        editingMentor.id,
+        editingMentor
+      );
+      setMentors((prev) =>
+        prev.map((m) => (m.id === updatedMentor.id ? updatedMentor : m))
+      );
+      setEditingMentor(null);
 
       toast({
         title: "تم تحديث المدرب",
         description: `تم تحديث بيانات ${updatedMentor.name} بنجاح`,
-      })
+      });
     } catch (error) {
-      console.error("Error updating mentor:", error)
+      console.error("Error updating mentor:", error);
       toast({
         title: "خطأ في التحديث",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء تحديث بيانات المدرب",
+        description:
+          error instanceof Error
+            ? error.message
+            : "حدث خطأ أثناء تحديث بيانات المدرب",
         variant: "destructive",
-      })
+      });
     } finally {
-      setMentorsLoading(false)
+      setMentorsLoading(false);
     }
-  }
+  };
 
   const handleDeleteMentor = async (id: number) => {
-    if (!confirm("هل أنت متأكد من حذف هذا المدرب؟")) return
+    if (!confirm("هل أنت متأكد من حذف هذا المدرب؟")) return;
 
-    setMentorsLoading(true)
+    setMentorsLoading(true);
     try {
-      await mentorsService.delete(id)
-      setMentors((prev) => prev.filter((m) => m.id !== id))
+      await mentorsService.delete(id);
+      setMentors((prev) => prev.filter((m) => m.id !== id));
 
       toast({
         title: "تم حذف المدرب",
         description: "تم حذف المدرب بنجاح",
-      })
+      });
     } catch (error) {
-      console.error("Error deleting mentor:", error)
+      console.error("Error deleting mentor:", error);
       toast({
         title: "خطأ في الحذف",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء حذف المدرب",
+        description:
+          error instanceof Error ? error.message : "حدث خطأ أثناء حذف المدرب",
         variant: "destructive",
-      })
+      });
     } finally {
-      setMentorsLoading(false)
+      setMentorsLoading(false);
     }
-  }
+  };
 
   // Session operations
   const handleAddSession = async () => {
-    if (!newSession.title || !newSession.date || !newSession.group || !newSession.course_id) {
+    if (
+      !newSession.title ||
+      !newSession.date ||
+      !newSession.group ||
+      !newSession.course_id
+    ) {
       toast({
         title: "بيانات ناقصة",
         description: "يرجى ملء جميع الحقول المطلوبة",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setSessionsLoading(true)
+    setSessionsLoading(true);
     try {
       const sessionData = {
         ...newSession,
         mentor_id: newSession.mentor_id || null,
-      }
+      };
 
-      const newSessionRecord = await sessionsService.create(sessionData)
-      setSessions((prev) => [newSessionRecord, ...prev])
+      const newSessionRecord = await sessionsService.create(sessionData);
+      setSessions((prev) => [newSessionRecord, ...prev]);
 
       setNewSession({
         title: "",
@@ -576,99 +673,107 @@ export function AdminDashboard() {
         course_id: "",
         group: "",
         location: "",
-      })
-      setAddingSession(false)
+      });
+      setAddingSession(false);
 
       toast({
         title: "تم إضافة الجلسة",
         description: `تم إضافة جلسة ${newSessionRecord.title} بنجاح`,
-      })
+      });
     } catch (error) {
-      console.error("Error adding session:", error)
+      console.error("Error adding session:", error);
       toast({
         title: "خطأ في الإضافة",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء إضافة الجلسة",
+        description:
+          error instanceof Error ? error.message : "حدث خطأ أثناء إضافة الجلسة",
         variant: "destructive",
-      })
+      });
     } finally {
-      setSessionsLoading(false)
+      setSessionsLoading(false);
     }
-  }
+  };
 
   const handleUpdateSession = async () => {
-    if (!editingSession) return
+    if (!editingSession) return;
 
-    setSessionsLoading(true)
+    setSessionsLoading(true);
     try {
-      const updatedSession = await sessionsService.update(editingSession.id, editingSession)
-      setSessions((prev) => prev.map((s) => (s.id === updatedSession.id ? updatedSession : s)))
-      setEditingSession(null)
+      const updatedSession = await sessionsService.update(
+        editingSession.id,
+        editingSession
+      );
+      setSessions((prev) =>
+        prev.map((s) => (s.id === updatedSession.id ? updatedSession : s))
+      );
+      setEditingSession(null);
 
       toast({
         title: "تم تحديث الجلسة",
         description: `تم تحديث جلسة ${updatedSession.title} بنجاح`,
-      })
+      });
     } catch (error) {
-      console.error("Error updating session:", error)
+      console.error("Error updating session:", error);
       toast({
         title: "خطأ في التحديث",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء تحديث الجلسة",
+        description:
+          error instanceof Error ? error.message : "حدث خطأ أثناء تحديث الجلسة",
         variant: "destructive",
-      })
+      });
     } finally {
-      setSessionsLoading(false)
+      setSessionsLoading(false);
     }
-  }
+  };
 
   const handleDeleteSession = async (id: number) => {
-    if (!confirm("هل أنت متأكد من حذف هذه الجلسة؟")) return
+    if (!confirm("هل أنت متأكد من حذف هذه الجلسة؟")) return;
 
-    setSessionsLoading(true)
+    setSessionsLoading(true);
     try {
-      await sessionsService.delete(id)
-      setSessions((prev) => prev.filter((s) => s.id !== id))
+      await sessionsService.delete(id);
+      setSessions((prev) => prev.filter((s) => s.id !== id));
 
       toast({
         title: "تم حذف الجلسة",
         description: "تم حذف الجلسة بنجاح",
-      })
+      });
     } catch (error) {
-      console.error("Error deleting session:", error)
+      console.error("Error deleting session:", error);
       toast({
         title: "خطأ في الحذف",
-        description: error instanceof Error ? error.message : "حدث خطأ أثناء حذف الجلسة",
+        description:
+          error instanceof Error ? error.message : "حدث خطأ أثناء حذف الجلسة",
         variant: "destructive",
-      })
+      });
     } finally {
-      setSessionsLoading(false)
+      setSessionsLoading(false);
     }
-  }
+  };
 
   // Helper functions
   const getParticipantRowClass = (participant: Participant) => {
-    const absenceCount = 8 - participant.attended_sessions.length
-    if (absenceCount >= 2) return "bg-red-500 text-white"
-    if (absenceCount === 1) return "bg-red-400 text-white"
-    return ""
-  }
+    const absenceCount = 8 - participant.attended_sessions.length;
+    if (absenceCount >= 2) return "bg-red-500 text-white";
+    if (absenceCount === 1) return "bg-red-400 text-white";
+    return "";
+  };
 
   const getParticipantNameClass = (participant: Participant) => {
-    const absenceCount = 8 - participant.attended_sessions.length
-    if (absenceCount >= 2) return "line-through"
-    return ""
-  }
+    const absenceCount = 8 - participant.attended_sessions.length;
+    if (absenceCount >= 2) return "line-through";
+    return "";
+  };
 
   const getCourseTitle = (courseId: string) => {
-    const course = TAMKEEN_COURSES.find((c) => c.id === courseId)
-    return course ? course.title : courseId
-  }
+    const course = TAMKEEN_COURSES.find((c) => c.id === courseId);
+    return course ? course.title : courseId;
+  };
 
   const filteredParticipants = participants.filter(
     (p) =>
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.track.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      p.track.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (loading) {
     return (
@@ -678,15 +783,19 @@ export function AdminDashboard() {
           <p className="text-gray-600">جاري تحميل البيانات...</p>
         </div>
       </div>
-    )
+    );
   }
 
   const renderDashboard = () => (
     <div>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-[#2b3761] mb-2">لوحة تحكم تمكين غرداية 2025</h1>
-          <p className="text-gray-600">إدارة المشاركين وتتبع تقدم فعالية تمكين</p>
+          <h1 className="text-4xl font-bold text-[#2b3761] mb-2">
+            لوحة تحكم تمكين غرداية 2025
+          </h1>
+          <p className="text-gray-600">
+            إدارة المشاركين وتتبع تقدم فعالية تمكين
+          </p>
           <p className="text-sm text-[#4767a7] mt-1">
             {tamkeenProgram.dates} - {tamkeenProgram.location}
           </p>
@@ -705,8 +814,12 @@ export function AdminDashboard() {
             <div className="flex items-center">
               <Users className="h-8 w-8 text-[#f7cd6f]" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-blue-100">إجمالي المشاركين</p>
-                <p className="text-3xl font-bold">{analytics.totalParticipants}</p>
+                <p className="text-sm font-medium text-blue-100">
+                  إجمالي المشاركين
+                </p>
+                <p className="text-3xl font-bold">
+                  {analytics.totalParticipants}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -717,7 +830,9 @@ export function AdminDashboard() {
             <div className="flex items-center">
               <BookUser className="h-8 w-8 text-[#2b3761]" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-[#2b3761]/70">المدربين</p>
+                <p className="text-sm font-medium text-[#2b3761]/70">
+                  المدربين
+                </p>
                 <p className="text-3xl font-bold">{analytics.totalMentors}</p>
               </div>
             </div>
@@ -729,8 +844,12 @@ export function AdminDashboard() {
             <div className="flex items-center">
               <TrendingUp className="h-8 w-8 text-green-100" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-green-100">معدل الحضور</p>
-                <p className="text-3xl font-bold">{analytics.attendanceRate}%</p>
+                <p className="text-sm font-medium text-green-100">
+                  معدل الحضور
+                </p>
+                <p className="text-3xl font-bold">
+                  {analytics.attendanceRate}%
+                </p>
               </div>
             </div>
           </CardContent>
@@ -741,8 +860,13 @@ export function AdminDashboard() {
             <div className="flex items-center">
               <AlertTriangle className="h-8 w-8 text-red-100" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-red-100">مهددون بالإقصاء</p>
-                <p className="text-3xl font-bold">{analytics.atRiskParticipants + analytics.excludedParticipants}</p>
+                <p className="text-sm font-medium text-red-100">
+                  مهددون بالإقصاء
+                </p>
+                <p className="text-3xl font-bold">
+                  {analytics.atRiskParticipants +
+                    analytics.excludedParticipants}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -756,8 +880,13 @@ export function AdminDashboard() {
             <div className="space-y-4">
               <div className="text-gray-500">
                 <UserPlus className="h-12 w-12 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">ابدأ بإضافة البيانات</h3>
-                <p className="text-gray-600">لا توجد بيانات حالياً. ابدأ بإضافة المشاركين والمدربين لبرنامج تمكين.</p>
+                <h3 className="text-xl font-semibold mb-2">
+                  ابدأ بإضافة البيانات
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  لا توجد بيانات حالياً. ابدأ بإضافة المشاركين والمدربين لبرنامج
+                  تمكين.
+                </p>
               </div>
               <div className="flex justify-center gap-4">
                 <Button
@@ -784,7 +913,9 @@ export function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <Card className="border-0 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-[#4767a7] to-[#2b3761] text-white rounded-t-lg">
-            <CardTitle className="text-xl">برنامج تمكين - المرحلة الأولى</CardTitle>
+            <CardTitle className="text-xl">
+              برنامج تمكين - المرحلة الأولى
+            </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-4">
@@ -794,14 +925,18 @@ export function AdminDashboard() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">التوقيت اليومي:</span>
-                <span className="font-semibold">{tamkeenProgram.daily_time}</span>
+                <span className="font-semibold">
+                  {tamkeenProgram.daily_time}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">الجلسات المجدولة:</span>
                 <span className="font-semibold">{analytics.totalSessions}</span>
               </div>
               <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800 font-medium">⚠️ الغياب يومين يؤدي للإقصاء</p>
+                <p className="text-sm text-yellow-800 font-medium">
+                  ⚠️ الغياب يومين يؤدي للإقصاء
+                </p>
               </div>
             </div>
           </CardContent>
@@ -814,27 +949,39 @@ export function AdminDashboard() {
           <CardContent className="p-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">على المسار الصحيح:</span>
-                <Badge className="bg-green-100 text-green-800">{analytics.onTrackParticipants}</Badge>
+                <span className="text-sm text-gray-600">
+                  على المسار الصحيح:
+                </span>
+                <Badge className="bg-green-100 text-green-800">
+                  {analytics.onTrackParticipants}
+                </Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">في خطر (غياب واحد):</span>
-                <Badge className="bg-red-100 text-red-800">{analytics.atRiskParticipants}</Badge>
+                <span className="text-sm text-gray-600">
+                  في خطر (غياب واحد):
+                </span>
+                <Badge className="bg-red-100 text-red-800">
+                  {analytics.atRiskParticipants}
+                </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">مقصيون (غيابان+):</span>
-                <Badge className="bg-red-500 text-white">{analytics.excludedParticipants}</Badge>
+                <Badge className="bg-red-500 text-white">
+                  {analytics.excludedParticipants}
+                </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">الجلسات القادمة:</span>
-                <Badge className="bg-blue-100 text-blue-800">{analytics.upcomingSessions}</Badge>
+                <Badge className="bg-blue-100 text-blue-800">
+                  {analytics.upcomingSessions}
+                </Badge>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 
   const renderParticipants = () => (
     <div>
@@ -869,8 +1016,12 @@ export function AdminDashboard() {
         <Card className="border-2 border-dashed border-gray-300">
           <CardContent className="p-12 text-center">
             <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">لا يوجد مشاركون</h3>
-            <p className="text-gray-500 mb-6">ابدأ بإضافة المشاركين لبرنامج تمكين</p>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              لا يوجد مشاركون
+            </h3>
+            <p className="text-gray-500 mb-6">
+              ابدأ بإضافة المشاركين لبرنامج تمكين
+            </p>
             <Button
               onClick={() => setAddingParticipant(true)}
               className="bg-gradient-to-r from-[#4767a7] to-[#2b3761] text-white"
@@ -887,18 +1038,31 @@ export function AdminDashboard() {
               <TableHeader>
                 <TableRow className="bg-gray-50">
                   <TableHead className="font-semibold">الاسم</TableHead>
-                  <TableHead className="font-semibold">البريد الإلكتروني</TableHead>
+                  <TableHead className="font-semibold">
+                    البريد الإلكتروني
+                  </TableHead>
                   <TableHead className="font-semibold">المسار</TableHead>
                   <TableHead className="font-semibold">المجموعة</TableHead>
-                  <TableHead className="font-semibold">الجلسات المحضورة</TableHead>
+                  <TableHead className="font-semibold">
+                    الجلسات المحضورة
+                  </TableHead>
                   <TableHead className="font-semibold">الحالة</TableHead>
                   <TableHead className="font-semibold">الإجراءات</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredParticipants.map((participant) => (
-                  <TableRow key={participant.id} className={`hover:bg-gray-50 ${getParticipantRowClass(participant)}`}>
-                    <TableCell className={`font-medium ${getParticipantNameClass(participant)}`}>
+                  <TableRow
+                    key={participant.id}
+                    className={`hover:bg-gray-50 ${getParticipantRowClass(
+                      participant
+                    )}`}
+                  >
+                    <TableCell
+                      className={`font-medium ${getParticipantNameClass(
+                        participant
+                      )}`}
+                    >
                       {participant.name}
                     </TableCell>
                     <TableCell>{participant.email}</TableCell>
@@ -910,13 +1074,19 @@ export function AdminDashboard() {
                     <TableCell>{participant.group}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold">{participant.attended_sessions.length}/8</span>
+                        <span className="font-semibold">
+                          {participant.attended_sessions.length}/8
+                        </span>
                         <div className="flex gap-1">
                           {Array.from({ length: 8 }).map((_, index) => (
                             <div
                               key={index}
                               className={`w-2 h-2 rounded-full ${
-                                participant.attended_sessions.includes(index + 1) ? "bg-green-500" : "bg-gray-300"
+                                participant.attended_sessions.includes(
+                                  index + 1
+                                )
+                                  ? "bg-green-500"
+                                  : "bg-gray-300"
                               }`}
                               title={`الجلسة ${index + 1}`}
                             />
@@ -930,15 +1100,15 @@ export function AdminDashboard() {
                           8 - participant.attended_sessions.length >= 2
                             ? "destructive"
                             : 8 - participant.attended_sessions.length === 1
-                              ? "secondary"
-                              : "default"
+                            ? "secondary"
+                            : "default"
                         }
                       >
                         {8 - participant.attended_sessions.length >= 2
                           ? "مقصي"
                           : 8 - participant.attended_sessions.length === 1
-                            ? "في خطر"
-                            : "جيد"}
+                          ? "في خطر"
+                          : "جيد"}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -955,7 +1125,9 @@ export function AdminDashboard() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleDeleteParticipant(participant.id)}
+                          onClick={() =>
+                            handleDeleteParticipant(participant.id)
+                          }
                           className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
                           disabled={participantsLoading}
                         >
@@ -971,7 +1143,7 @@ export function AdminDashboard() {
         </Card>
       )}
     </div>
-  )
+  );
 
   const renderMentors = () => (
     <div>
@@ -982,7 +1154,11 @@ export function AdminDashboard() {
           className="bg-gradient-to-r from-[#4767a7] to-[#2b3761] text-white hover:shadow-lg"
           disabled={mentorsLoading}
         >
-          {mentorsLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+          {mentorsLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="mr-2 h-4 w-4" />
+          )}
           إضافة مدرب
         </Button>
       </div>
@@ -991,8 +1167,12 @@ export function AdminDashboard() {
         <Card className="border-2 border-dashed border-gray-300">
           <CardContent className="p-12 text-center">
             <BookUser className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">لا يوجد مدربون</h3>
-            <p className="text-gray-500 mb-6">ابدأ بإضافة المدربين لبرنامج تمكين</p>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              لا يوجد مدربون
+            </h3>
+            <p className="text-gray-500 mb-6">
+              ابدأ بإضافة المدربين لبرنامج تمكين
+            </p>
             <Button
               onClick={() => setAddingMentor(true)}
               className="bg-gradient-to-r from-[#4767a7] to-[#2b3761] text-white"
@@ -1023,7 +1203,11 @@ export function AdminDashboard() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {mentor.specialties.slice(0, 2).map((specialty) => (
-                          <Badge key={specialty} variant="outline" className="text-xs">
+                          <Badge
+                            key={specialty}
+                            variant="outline"
+                            className="text-xs"
+                          >
                             {getCourseTitle(specialty)}
                           </Badge>
                         ))}
@@ -1037,7 +1221,11 @@ export function AdminDashboard() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {mentor.availability.slice(0, 3).map((day) => (
-                          <Badge key={day} variant="secondary" className="text-xs">
+                          <Badge
+                            key={day}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {day}
                           </Badge>
                         ))}
@@ -1073,7 +1261,7 @@ export function AdminDashboard() {
         </Card>
       )}
     </div>
-  )
+  );
 
   const renderSessions = () => (
     <div>
@@ -1084,7 +1272,11 @@ export function AdminDashboard() {
           className="bg-gradient-to-r from-[#f7cd6f] to-[#eeb93c] text-[#2b3761] hover:shadow-lg"
           disabled={sessionsLoading}
         >
-          {sessionsLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+          {sessionsLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="mr-2 h-4 w-4" />
+          )}
           إضافة جلسة
         </Button>
       </div>
@@ -1093,8 +1285,12 @@ export function AdminDashboard() {
         <Card className="border-2 border-dashed border-gray-300">
           <CardContent className="p-12 text-center">
             <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">لا توجد جلسات</h3>
-            <p className="text-gray-500 mb-6">ابدأ بإضافة الجلسات التدريبية لبرنامج تمكين</p>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              لا توجد جلسات
+            </h3>
+            <p className="text-gray-500 mb-6">
+              ابدأ بإضافة الجلسات التدريبية لبرنامج تمكين
+            </p>
             <Button
               onClick={() => setAddingSession(true)}
               className="bg-gradient-to-r from-[#f7cd6f] to-[#eeb93c] text-[#2b3761]"
@@ -1122,12 +1318,19 @@ export function AdminDashboard() {
               <TableBody>
                 {sessions.map((session) => (
                   <TableRow key={session.id} className="hover:bg-gray-50">
-                    <TableCell className="font-medium">{session.title}</TableCell>
-                    <TableCell>{new Date(session.date).toLocaleDateString("ar-DZ")}</TableCell>
+                    <TableCell className="font-medium">
+                      {session.title}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(session.date).toLocaleDateString("ar-DZ")}
+                    </TableCell>
                     <TableCell>
                       {session.start_time} - {session.end_time}
                     </TableCell>
-                    <TableCell>{mentors.find((m) => m.id === session.mentor_id)?.name || "غير محدد"}</TableCell>
+                    <TableCell>
+                      {mentors.find((m) => m.id === session.mentor_id)?.name ||
+                        "غير محدد"}
+                    </TableCell>
                     <TableCell>
                       <Badge variant="outline" className="text-xs">
                         {getCourseTitle(session.course_id)}
@@ -1164,13 +1367,16 @@ export function AdminDashboard() {
         </Card>
       )}
     </div>
-  )
+  );
 
   const renderCompanies = () => (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-[#2b3761]">الشركات المشاركة</h1>
-        <Button onClick={() => exportToCSV(companies, "tamkeen-companies.csv")} variant="outline">
+        <Button
+          onClick={() => exportToCSV(companies, "tamkeen-companies.csv")}
+          variant="outline"
+        >
           <Download className="mr-2 h-4 w-4" />
           تصدير CSV
         </Button>
@@ -1180,7 +1386,9 @@ export function AdminDashboard() {
         <Card className="border-2 border-dashed border-gray-300">
           <CardContent className="p-12 text-center">
             <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">لا توجد شركات</h3>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              لا توجد شركات
+            </h3>
             <p className="text-gray-500">لم يتم تسجيل أي شركات مشاركة بعد</p>
           </CardContent>
         </Card>
@@ -1192,7 +1400,9 @@ export function AdminDashboard() {
                 <TableRow className="bg-gray-50">
                   <TableHead className="font-semibold">اسم الشركة</TableHead>
                   <TableHead className="font-semibold">الشخص المسؤول</TableHead>
-                  <TableHead className="font-semibold">البريد الإلكتروني</TableHead>
+                  <TableHead className="font-semibold">
+                    البريد الإلكتروني
+                  </TableHead>
                   <TableHead className="font-semibold">النوع</TableHead>
                   <TableHead className="font-semibold">الحالة</TableHead>
                 </TableRow>
@@ -1200,13 +1410,23 @@ export function AdminDashboard() {
               <TableBody>
                 {companies.map((company) => (
                   <TableRow key={company.id} className="hover:bg-gray-50">
-                    <TableCell className="font-medium">{company.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {company.name}
+                    </TableCell>
                     <TableCell>{company.contact}</TableCell>
                     <TableCell>{company.email}</TableCell>
                     <TableCell>{company.type}</TableCell>
                     <TableCell>
-                      <Badge variant={company.status === "Confirmed" ? "default" : "secondary"}>
-                        {company.status === "Confirmed" ? "مؤكد" : "في الانتظار"}
+                      <Badge
+                        variant={
+                          company.status === "Confirmed"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {company.status === "Confirmed"
+                          ? "مؤكد"
+                          : "في الانتظار"}
                       </Badge>
                     </TableCell>
                   </TableRow>
@@ -1217,7 +1437,7 @@ export function AdminDashboard() {
         </Card>
       )}
     </div>
-  )
+  );
 
   return (
     <AdminSidebarProvider>
@@ -1250,14 +1470,18 @@ export function AdminDashboard() {
               <Dialog
                 open={true}
                 onOpenChange={() => {
-                  setAddingParticipant(false)
-                  setEditingParticipant(null)
+                  setAddingParticipant(false);
+                  setEditingParticipant(null);
                 }}
               >
                 <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{editingParticipant ? "تعديل مشارك" : "إضافة مشارك جديد"}</DialogTitle>
-                    <DialogDescription>أدخل معلومات المشارك واختر المسار والجلسات المحضورة.</DialogDescription>
+                    <DialogTitle>
+                      {editingParticipant ? "تعديل مشارك" : "إضافة مشارك جديد"}
+                    </DialogTitle>
+                    <DialogDescription>
+                      أدخل معلومات المشارك واختر المسار والجلسات المحضورة.
+                    </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-2 gap-4">
@@ -1265,12 +1489,20 @@ export function AdminDashboard() {
                         <Label htmlFor="name">الاسم الكامل *</Label>
                         <Input
                           id="name"
-                          value={editingParticipant?.name || newParticipant.name}
+                          value={
+                            editingParticipant?.name || newParticipant.name
+                          }
                           onChange={(e) => {
                             if (editingParticipant) {
-                              setEditingParticipant({ ...editingParticipant, name: e.target.value })
+                              setEditingParticipant({
+                                ...editingParticipant,
+                                name: e.target.value,
+                              });
                             } else {
-                              setNewParticipant({ ...newParticipant, name: e.target.value })
+                              setNewParticipant({
+                                ...newParticipant,
+                                name: e.target.value,
+                              });
                             }
                           }}
                           placeholder="الاسم الكامل"
@@ -1281,12 +1513,20 @@ export function AdminDashboard() {
                         <Input
                           id="email"
                           type="email"
-                          value={editingParticipant?.email || newParticipant.email}
+                          value={
+                            editingParticipant?.email || newParticipant.email
+                          }
                           onChange={(e) => {
                             if (editingParticipant) {
-                              setEditingParticipant({ ...editingParticipant, email: e.target.value })
+                              setEditingParticipant({
+                                ...editingParticipant,
+                                email: e.target.value,
+                              });
                             } else {
-                              setNewParticipant({ ...newParticipant, email: e.target.value })
+                              setNewParticipant({
+                                ...newParticipant,
+                                email: e.target.value,
+                              });
                             }
                           }}
                           placeholder="email@example.com"
@@ -1298,12 +1538,20 @@ export function AdminDashboard() {
                         <Label htmlFor="phone">الهاتف</Label>
                         <Input
                           id="phone"
-                          value={editingParticipant?.phone || newParticipant.phone}
+                          value={
+                            editingParticipant?.phone || newParticipant.phone
+                          }
                           onChange={(e) => {
                             if (editingParticipant) {
-                              setEditingParticipant({ ...editingParticipant, phone: e.target.value })
+                              setEditingParticipant({
+                                ...editingParticipant,
+                                phone: e.target.value,
+                              });
                             } else {
-                              setNewParticipant({ ...newParticipant, phone: e.target.value })
+                              setNewParticipant({
+                                ...newParticipant,
+                                phone: e.target.value,
+                              });
                             }
                           }}
                           placeholder="+213 XXX XXX XXX"
@@ -1317,9 +1565,15 @@ export function AdminDashboard() {
                           value={editingParticipant?.age || newParticipant.age}
                           onChange={(e) => {
                             if (editingParticipant) {
-                              setEditingParticipant({ ...editingParticipant, age: Number.parseInt(e.target.value) })
+                              setEditingParticipant({
+                                ...editingParticipant,
+                                age: Number.parseInt(e.target.value),
+                              });
                             } else {
-                              setNewParticipant({ ...newParticipant, age: e.target.value })
+                              setNewParticipant({
+                                ...newParticipant,
+                                age: e.target.value,
+                              });
                             }
                           }}
                           placeholder="العمر"
@@ -1328,12 +1582,20 @@ export function AdminDashboard() {
                       <div>
                         <Label htmlFor="group">المجموعة</Label>
                         <Select
-                          value={editingParticipant?.group || newParticipant.group}
+                          value={
+                            editingParticipant?.group || newParticipant.group
+                          }
                           onValueChange={(value) => {
                             if (editingParticipant) {
-                              setEditingParticipant({ ...editingParticipant, group: value })
+                              setEditingParticipant({
+                                ...editingParticipant,
+                                group: value,
+                              });
                             } else {
-                              setNewParticipant({ ...newParticipant, group: value })
+                              setNewParticipant({
+                                ...newParticipant,
+                                group: value,
+                              });
                             }
                           }}
                         >
@@ -1351,12 +1613,20 @@ export function AdminDashboard() {
                     <div>
                       <Label htmlFor="track">المسار</Label>
                       <Select
-                        value={editingParticipant?.track || newParticipant.track}
+                        value={
+                          editingParticipant?.track || newParticipant.track
+                        }
                         onValueChange={(value) => {
                           if (editingParticipant) {
-                            setEditingParticipant({ ...editingParticipant, track: value })
+                            setEditingParticipant({
+                              ...editingParticipant,
+                              track: value,
+                            });
                           } else {
-                            setNewParticipant({ ...newParticipant, track: value })
+                            setNewParticipant({
+                              ...newParticipant,
+                              track: value,
+                            });
                           }
                         }}
                       >
@@ -1364,8 +1634,12 @@ export function AdminDashboard() {
                           <SelectValue placeholder="اختر المسار" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Entrepreneurship & Startups">ريادة الأعمال والمشاريع الناشئة</SelectItem>
-                          <SelectItem value="Employment & Job Readiness">التوظيف والاستعداد للعمل</SelectItem>
+                          <SelectItem value="Entrepreneurship & Startups">
+                            ريادة الأعمال والمشاريع الناشئة
+                          </SelectItem>
+                          <SelectItem value="Employment & Job Readiness">
+                            التوظيف والاستعداد للعمل
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1374,18 +1648,24 @@ export function AdminDashboard() {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        setAddingParticipant(false)
-                        setEditingParticipant(null)
+                        setAddingParticipant(false);
+                        setEditingParticipant(null);
                       }}
                     >
                       إلغاء
                     </Button>
                     <Button
-                      onClick={editingParticipant ? handleUpdateParticipant : handleAddParticipant}
+                      onClick={
+                        editingParticipant
+                          ? handleUpdateParticipant
+                          : handleAddParticipant
+                      }
                       className="bg-[#4767a7] hover:bg-[#2b3761]"
                       disabled={participantsLoading}
                     >
-                      {participantsLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {participantsLoading && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
                       {editingParticipant ? "حفظ التغييرات" : "إضافة مشارك"}
                     </Button>
                   </div>
@@ -1398,14 +1678,18 @@ export function AdminDashboard() {
               <Dialog
                 open={true}
                 onOpenChange={() => {
-                  setAddingMentor(false)
-                  setEditingMentor(null)
+                  setAddingMentor(false);
+                  setEditingMentor(null);
                 }}
               >
                 <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{editingMentor ? "تعديل مدرب" : "إضافة مدرب جديد"}</DialogTitle>
-                    <DialogDescription>أدخل معلومات المدرب واختر التخصصات من برنامج تمكين.</DialogDescription>
+                    <DialogTitle>
+                      {editingMentor ? "تعديل مدرب" : "إضافة مدرب جديد"}
+                    </DialogTitle>
+                    <DialogDescription>
+                      أدخل معلومات المدرب واختر التخصصات من برنامج تمكين.
+                    </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-2 gap-4">
@@ -1416,24 +1700,38 @@ export function AdminDashboard() {
                           value={editingMentor?.name || newMentor.name}
                           onChange={(e) => {
                             if (editingMentor) {
-                              setEditingMentor({ ...editingMentor, name: e.target.value })
+                              setEditingMentor({
+                                ...editingMentor,
+                                name: e.target.value,
+                              });
                             } else {
-                              setNewMentor({ ...newMentor, name: e.target.value })
+                              setNewMentor({
+                                ...newMentor,
+                                name: e.target.value,
+                              });
                             }
                           }}
                           placeholder="الاسم الكامل"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="mentor-phone-primary">رقم الهاتف *</Label>
+                        <Label htmlFor="mentor-phone-primary">
+                          رقم الهاتف *
+                        </Label>
                         <Input
                           id="mentor-phone-primary"
                           value={editingMentor?.phone || newMentor.phone}
                           onChange={(e) => {
                             if (editingMentor) {
-                              setEditingMentor({ ...editingMentor, phone: e.target.value })
+                              setEditingMentor({
+                                ...editingMentor,
+                                phone: e.target.value,
+                              });
                             } else {
-                              setNewMentor({ ...newMentor, phone: e.target.value })
+                              setNewMentor({
+                                ...newMentor,
+                                phone: e.target.value,
+                              });
                             }
                           }}
                           placeholder="+213 XXX XXX XXX"
@@ -1448,9 +1746,15 @@ export function AdminDashboard() {
                         value={editingMentor?.email || newMentor.email}
                         onChange={(e) => {
                           if (editingMentor) {
-                            setEditingMentor({ ...editingMentor, email: e.target.value })
+                            setEditingMentor({
+                              ...editingMentor,
+                              email: e.target.value,
+                            });
                           } else {
-                            setNewMentor({ ...newMentor, email: e.target.value })
+                            setNewMentor({
+                              ...newMentor,
+                              email: e.target.value,
+                            });
                           }
                         }}
                         placeholder="email@example.com"
@@ -1460,20 +1764,36 @@ export function AdminDashboard() {
                       <Label>التخصصات (من برنامج تمكين)</Label>
                       <div className="grid grid-cols-1 gap-3 mt-2 max-h-48 overflow-y-auto border rounded-lg p-4">
                         {TAMKEEN_COURSES.map((course) => (
-                          <div key={course.id} className="flex items-center space-x-3">
+                          <div
+                            key={course.id}
+                            className="flex items-center space-x-3"
+                          >
                             <Checkbox
                               id={`course-${course.id}`}
-                              checked={(editingMentor?.specialties || newMentor.specialties).includes(course.id)}
+                              checked={(
+                                editingMentor?.specialties ||
+                                newMentor.specialties
+                              ).includes(course.id)}
                               onCheckedChange={(checked) => {
-                                const currentSpecialties = editingMentor?.specialties || newMentor.specialties
+                                const currentSpecialties =
+                                  editingMentor?.specialties ||
+                                  newMentor.specialties;
                                 const newSpecialties = checked
                                   ? [...currentSpecialties, course.id]
-                                  : currentSpecialties.filter((s) => s !== course.id)
+                                  : currentSpecialties.filter(
+                                      (s) => s !== course.id
+                                    );
 
                                 if (editingMentor) {
-                                  setEditingMentor({ ...editingMentor, specialties: newSpecialties })
+                                  setEditingMentor({
+                                    ...editingMentor,
+                                    specialties: newSpecialties,
+                                  });
                                 } else {
-                                  setNewMentor({ ...newMentor, specialties: newSpecialties })
+                                  setNewMentor({
+                                    ...newMentor,
+                                    specialties: newSpecialties,
+                                  });
                                 }
                               }}
                             />
@@ -1481,14 +1801,20 @@ export function AdminDashboard() {
                               htmlFor={`course-${course.id}`}
                               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                             >
-                              <span className="font-semibold text-[#4767a7]">اليوم {course.day}:</span> {course.title}
+                              <span className="font-semibold text-[#4767a7]">
+                                اليوم {course.day}:
+                              </span>{" "}
+                              {course.title}
                               {course.type !== "main" && (
-                                <Badge variant="outline" className="ml-2 text-xs">
+                                <Badge
+                                  variant="outline"
+                                  className="ml-2 text-xs"
+                                >
                                   {course.type === "entrepreneurship"
                                     ? "ريادة الأعمال"
                                     : course.type === "employment"
-                                      ? "التوظيف"
-                                      : "مشترك"}
+                                    ? "التوظيف"
+                                    : "مشترك"}
                                 </Badge>
                               )}
                             </Label>
@@ -1499,25 +1825,45 @@ export function AdminDashboard() {
                     <div>
                       <Label>أيام الإتاحة</Label>
                       <div className="grid grid-cols-4 gap-2 mt-2">
-                        {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+                        {[
+                          "Monday",
+                          "Tuesday",
+                          "Wednesday",
+                          "Thursday",
+                          "Friday",
+                          "Saturday",
+                          "Sunday",
+                        ].map((day) => (
                           <Button
                             key={day}
                             type="button"
                             variant={
-                              (editingMentor?.availability || newMentor.availability).includes(day)
+                              (
+                                editingMentor?.availability ||
+                                newMentor.availability
+                              ).includes(day)
                                 ? "default"
                                 : "outline"
                             }
                             onClick={() => {
-                              const currentAvailability = editingMentor?.availability || newMentor.availability
-                              const newAvailability = currentAvailability.includes(day)
-                                ? currentAvailability.filter((d) => d !== day)
-                                : [...currentAvailability, day]
+                              const currentAvailability =
+                                editingMentor?.availability ||
+                                newMentor.availability;
+                              const newAvailability =
+                                currentAvailability.includes(day)
+                                  ? currentAvailability.filter((d) => d !== day)
+                                  : [...currentAvailability, day];
 
                               if (editingMentor) {
-                                setEditingMentor({ ...editingMentor, availability: newAvailability })
+                                setEditingMentor({
+                                  ...editingMentor,
+                                  availability: newAvailability,
+                                });
                               } else {
-                                setNewMentor({ ...newMentor, availability: newAvailability })
+                                setNewMentor({
+                                  ...newMentor,
+                                  availability: newAvailability,
+                                });
                               }
                             }}
                             className="text-xs"
@@ -1525,16 +1871,16 @@ export function AdminDashboard() {
                             {day === "Monday"
                               ? "الاثنين"
                               : day === "Tuesday"
-                                ? "الثلاثاء"
-                                : day === "Wednesday"
-                                  ? "الأربعاء"
-                                  : day === "Thursday"
-                                    ? "الخميس"
-                                    : day === "Friday"
-                                      ? "الجمعة"
-                                      : day === "Saturday"
-                                        ? "السبت"
-                                        : "الأحد"}
+                              ? "الثلاثاء"
+                              : day === "Wednesday"
+                              ? "الأربعاء"
+                              : day === "Thursday"
+                              ? "الخميس"
+                              : day === "Friday"
+                              ? "الجمعة"
+                              : day === "Saturday"
+                              ? "السبت"
+                              : "الأحد"}
                           </Button>
                         ))}
                       </div>
@@ -1546,9 +1892,12 @@ export function AdminDashboard() {
                         value={editingMentor?.bio || newMentor.bio}
                         onChange={(e) => {
                           if (editingMentor) {
-                            setEditingMentor({ ...editingMentor, bio: e.target.value })
+                            setEditingMentor({
+                              ...editingMentor,
+                              bio: e.target.value,
+                            });
                           } else {
-                            setNewMentor({ ...newMentor, bio: e.target.value })
+                            setNewMentor({ ...newMentor, bio: e.target.value });
                           }
                         }}
                         placeholder="نبذة مختصرة عن المدرب وخبراته..."
@@ -1560,18 +1909,22 @@ export function AdminDashboard() {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        setAddingMentor(false)
-                        setEditingMentor(null)
+                        setAddingMentor(false);
+                        setEditingMentor(null);
                       }}
                     >
                       إلغاء
                     </Button>
                     <Button
-                      onClick={editingMentor ? handleUpdateMentor : handleAddMentor}
+                      onClick={
+                        editingMentor ? handleUpdateMentor : handleAddMentor
+                      }
                       className="bg-[#4767a7] hover:bg-[#2b3761]"
                       disabled={mentorsLoading}
                     >
-                      {mentorsLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {mentorsLoading && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
                       {editingMentor ? "حفظ التغييرات" : "إضافة مدرب"}
                     </Button>
                   </div>
@@ -1584,14 +1937,19 @@ export function AdminDashboard() {
               <Dialog
                 open={true}
                 onOpenChange={() => {
-                  setAddingSession(false)
-                  setEditingSession(null)
+                  setAddingSession(false);
+                  setEditingSession(null);
                 }}
               >
                 <DialogContent className="sm:max-w-[600px]">
                   <DialogHeader>
-                    <DialogTitle>{editingSession ? "تعديل جلسة" : "إضافة جلسة جديدة"}</DialogTitle>
-                    <DialogDescription>أدخل تفاصيل الجلسة التدريبية واختر المحتوى من برنامج تمكين.</DialogDescription>
+                    <DialogTitle>
+                      {editingSession ? "تعديل جلسة" : "إضافة جلسة جديدة"}
+                    </DialogTitle>
+                    <DialogDescription>
+                      أدخل تفاصيل الجلسة التدريبية واختر المحتوى من برنامج
+                      تمكين.
+                    </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div>
@@ -1601,9 +1959,15 @@ export function AdminDashboard() {
                         value={editingSession?.title || newSession.title}
                         onChange={(e) => {
                           if (editingSession) {
-                            setEditingSession({ ...editingSession, title: e.target.value })
+                            setEditingSession({
+                              ...editingSession,
+                              title: e.target.value,
+                            });
                           } else {
-                            setNewSession({ ...newSession, title: e.target.value })
+                            setNewSession({
+                              ...newSession,
+                              title: e.target.value,
+                            });
                           }
                         }}
                         placeholder="عنوان الجلسة"
@@ -1618,9 +1982,15 @@ export function AdminDashboard() {
                           value={editingSession?.date || newSession.date}
                           onChange={(e) => {
                             if (editingSession) {
-                              setEditingSession({ ...editingSession, date: e.target.value })
+                              setEditingSession({
+                                ...editingSession,
+                                date: e.target.value,
+                              });
                             } else {
-                              setNewSession({ ...newSession, date: e.target.value })
+                              setNewSession({
+                                ...newSession,
+                                date: e.target.value,
+                              });
                             }
                           }}
                         />
@@ -1629,12 +1999,20 @@ export function AdminDashboard() {
                         <Label htmlFor="session-location">المكان</Label>
                         <Input
                           id="session-location"
-                          value={editingSession?.location || newSession.location}
+                          value={
+                            editingSession?.location || newSession.location
+                          }
                           onChange={(e) => {
                             if (editingSession) {
-                              setEditingSession({ ...editingSession, location: e.target.value })
+                              setEditingSession({
+                                ...editingSession,
+                                location: e.target.value,
+                              });
                             } else {
-                              setNewSession({ ...newSession, location: e.target.value })
+                              setNewSession({
+                                ...newSession,
+                                location: e.target.value,
+                              });
                             }
                           }}
                           placeholder="مكان انعقاد الجلسة"
@@ -1647,12 +2025,20 @@ export function AdminDashboard() {
                         <Input
                           id="session-start"
                           type="time"
-                          value={editingSession?.start_time || newSession.start_time}
+                          value={
+                            editingSession?.start_time || newSession.start_time
+                          }
                           onChange={(e) => {
                             if (editingSession) {
-                              setEditingSession({ ...editingSession, start_time: e.target.value })
+                              setEditingSession({
+                                ...editingSession,
+                                start_time: e.target.value,
+                              });
                             } else {
-                              setNewSession({ ...newSession, start_time: e.target.value })
+                              setNewSession({
+                                ...newSession,
+                                start_time: e.target.value,
+                              });
                             }
                           }}
                         />
@@ -1662,12 +2048,20 @@ export function AdminDashboard() {
                         <Input
                           id="session-end"
                           type="time"
-                          value={editingSession?.end_time || newSession.end_time}
+                          value={
+                            editingSession?.end_time || newSession.end_time
+                          }
                           onChange={(e) => {
                             if (editingSession) {
-                              setEditingSession({ ...editingSession, end_time: e.target.value })
+                              setEditingSession({
+                                ...editingSession,
+                                end_time: e.target.value,
+                              });
                             } else {
-                              setNewSession({ ...newSession, end_time: e.target.value })
+                              setNewSession({
+                                ...newSession,
+                                end_time: e.target.value,
+                              });
                             }
                           }}
                         />
@@ -1676,12 +2070,17 @@ export function AdminDashboard() {
                     <div>
                       <Label htmlFor="session-course">المحتوى التدريبي *</Label>
                       <Select
-                        value={editingSession?.course_id || newSession.course_id}
+                        value={
+                          editingSession?.course_id || newSession.course_id
+                        }
                         onValueChange={(value) => {
                           if (editingSession) {
-                            setEditingSession({ ...editingSession, course_id: value })
+                            setEditingSession({
+                              ...editingSession,
+                              course_id: value,
+                            });
                           } else {
-                            setNewSession({ ...newSession, course_id: value })
+                            setNewSession({ ...newSession, course_id: value });
                           }
                         }}
                       >
@@ -1698,8 +2097,8 @@ export function AdminDashboard() {
                                   {course.type === "entrepreneurship"
                                     ? "ريادة الأعمال"
                                     : course.type === "employment"
-                                      ? "التوظيف"
-                                      : "مشترك"}
+                                    ? "التوظيف"
+                                    : "مشترك"}
                                   )
                                 </span>
                               )}
@@ -1712,12 +2111,21 @@ export function AdminDashboard() {
                       <div>
                         <Label htmlFor="session-mentor">المدرب</Label>
                         <Select
-                          value={editingSession?.mentor_id?.toString() || newSession.mentor_id?.toString()}
+                          value={
+                            editingSession?.mentor_id?.toString() ||
+                            newSession.mentor_id?.toString()
+                          }
                           onValueChange={(value) => {
                             if (editingSession) {
-                              setEditingSession({ ...editingSession, mentor_id: Number.parseInt(value) })
+                              setEditingSession({
+                                ...editingSession,
+                                mentor_id: Number.parseInt(value),
+                              });
                             } else {
-                              setNewSession({ ...newSession, mentor_id: Number.parseInt(value) })
+                              setNewSession({
+                                ...newSession,
+                                mentor_id: Number.parseInt(value),
+                              });
                             }
                           }}
                         >
@@ -1726,7 +2134,10 @@ export function AdminDashboard() {
                           </SelectTrigger>
                           <SelectContent>
                             {mentors.map((mentor) => (
-                              <SelectItem key={mentor.id} value={mentor.id.toString()}>
+                              <SelectItem
+                                key={mentor.id}
+                                value={mentor.id.toString()}
+                              >
                                 {mentor.name}
                               </SelectItem>
                             ))}
@@ -1734,14 +2145,19 @@ export function AdminDashboard() {
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="session-group">المجموعة المستهدفة</Label>
+                        <Label htmlFor="session-group">
+                          المجموعة المستهدفة
+                        </Label>
                         <Select
                           value={editingSession?.group || newSession.group}
                           onValueChange={(value) => {
                             if (editingSession) {
-                              setEditingSession({ ...editingSession, group: value })
+                              setEditingSession({
+                                ...editingSession,
+                                group: value,
+                              });
                             } else {
-                              setNewSession({ ...newSession, group: value })
+                              setNewSession({ ...newSession, group: value });
                             }
                           }}
                         >
@@ -1749,7 +2165,9 @@ export function AdminDashboard() {
                             <SelectValue placeholder="اختر المجموعة" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="All Groups">جميع المجموعات</SelectItem>
+                            <SelectItem value="All Groups">
+                              جميع المجموعات
+                            </SelectItem>
                             <SelectItem value="Group A">المجموعة أ</SelectItem>
                             <SelectItem value="Group B">المجموعة ب</SelectItem>
                             <SelectItem value="Group C">المجموعة ج</SelectItem>
@@ -1762,18 +2180,22 @@ export function AdminDashboard() {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        setAddingSession(false)
-                        setEditingSession(null)
+                        setAddingSession(false);
+                        setEditingSession(null);
                       }}
                     >
                       إلغاء
                     </Button>
                     <Button
-                      onClick={editingSession ? handleUpdateSession : handleAddSession}
+                      onClick={
+                        editingSession ? handleUpdateSession : handleAddSession
+                      }
                       className="bg-[#4767a7] hover:bg-[#2b3761]"
                       disabled={sessionsLoading}
                     >
-                      {sessionsLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {sessionsLoading && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
                       {editingSession ? "حفظ التغييرات" : "إضافة جلسة"}
                     </Button>
                   </div>
@@ -1785,26 +2207,36 @@ export function AdminDashboard() {
             {showScanner && (
               <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
                 <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
-                  <h3 className="text-2xl font-bold text-[#2b3761] mb-6 text-center">ماسح QR تمكين</h3>
+                  <h3 className="text-2xl font-bold text-[#2b3761] mb-6 text-center">
+                    ماسح QR تمكين
+                  </h3>
                   <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-8 text-center mb-6">
                     <Scan className="h-16 w-16 text-[#4767a7] mx-auto mb-4" />
-                    <p className="text-gray-600 mb-4">سيتم تنفيذ ماسح QR هنا باستخدام الوصول للكاميرا</p>
-                    <p className="text-sm text-gray-500 mb-4">للتجربة: أدخل رمز QR يدوياً</p>
+                    <p className="text-gray-600 mb-4">
+                      سيتم تنفيذ ماسح QR هنا باستخدام الوصول للكاميرا
+                    </p>
+                    <p className="text-sm text-gray-500 mb-4">
+                      للتجربة: أدخل رمز QR يدوياً
+                    </p>
                     <Input
                       type="text"
                       placeholder="أدخل رمز QR (مثال: TMK001)"
                       className="mb-4"
                       onKeyPress={(e) => {
                         if (e.key === "Enter") {
-                          const target = e.target as HTMLInputElement
-                          handleQRScan(target.value)
-                          target.value = ""
+                          const target = e.target as HTMLInputElement;
+                          handleQRScan(target.value);
+                          target.value = "";
                         }
                       }}
                     />
                   </div>
                   <div className="flex gap-3">
-                    <Button onClick={() => setShowScanner(false)} variant="outline" className="flex-1">
+                    <Button
+                      onClick={() => setShowScanner(false)}
+                      variant="outline"
+                      className="flex-1"
+                    >
                       إلغاء
                     </Button>
                     <Button
@@ -1821,5 +2253,5 @@ export function AdminDashboard() {
         </SidebarInset>
       </div>
     </AdminSidebarProvider>
-  )
+  );
 }
