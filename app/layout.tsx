@@ -11,8 +11,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "تمكين غرداية 2025 | Tamkeen Ghardaia",
   description:
-    "انضم إلى أكبر حدث لتمكين الشباب في غرداية - تدريب متخصص في ريادة الأعمال والتوظيف مع فرص التواصل والمعارض",
-  generator: "v0.dev",
+    "تمكين هو حدث شبابي يُقام في بريان، ولاية غرداية، يهدف إلى تأهيل وتمكين الشباب في مجالات التوظيف وريادة الأعمال من خلال ورشات تدريب، تحديات ميدانية، وشراكات مع مؤسسات محلية",
+  icons: {
+    icon: "/tamkeen-logo.png",
+  },
 };
 
 export default function RootLayout({
