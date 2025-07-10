@@ -25,16 +25,18 @@ export function Navbar() {
     <header
       className={cn(
         "fixed w-full top-0 z-50 transition-all duration-300",
-        scrolled ? "bg-primary/30 backdrop-blur-sm shadow-md" : "bg-transparent"
+        scrolled
+          ? "bg-[#0d2a5e]/90 backdrop-blur-sm shadow-md"
+          : "bg-transparent"
       )}
     >
-      <nav className="container mx-auto px-6 py-2 flex justify-between items-center">
-        <Link href="/" className="text-xl font-extrabold text-[#ffd98e]">
+      <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+        <Link href="/" className="text-xl font-extrabold text-[#d4af37]">
           <Image
             src={"/tamkeen-logo.png"}
             alt="Tamkeen Logo"
             width={100}
-            height={20}
+            height={35}
             className="inline-block mr-2"
           />
         </Link>
@@ -45,8 +47,8 @@ export function Navbar() {
             className={cn(
               "transition-colors font-medium",
               scrolled
-                ? "text-white hover:text-[#ffd98e]"
-                : "text-white hover:text-[#ffd98e]"
+                ? "text-white hover:text-[#d4af37]"
+                : "text-white hover:text-[#d4af37]"
             )}
           >
             الرئيسية
@@ -56,8 +58,8 @@ export function Navbar() {
             className={cn(
               "transition-colors font-medium",
               scrolled
-                ? "text-white hover:text-[#ffd98e]"
-                : "text-white hover:text-[#ffd98e]"
+                ? "text-white hover:text-[#d4af37]"
+                : "text-white hover:text-[#d4af37]"
             )}
           >
             حول الحدث
@@ -67,8 +69,8 @@ export function Navbar() {
             className={cn(
               "transition-colors font-medium",
               scrolled
-                ? "text-white hover:text-[#ffd98e]"
-                : "text-white hover:text-[#ffd98e]"
+                ? "text-white hover:text-[#d4af37]"
+                : "text-white hover:text-[#d4af37]"
             )}
           >
             التسجيل
@@ -78,8 +80,8 @@ export function Navbar() {
             className={cn(
               "transition-colors font-medium",
               scrolled
-                ? "text-white hover:text-[#ffd98e]"
-                : "text-white hover:text-[#ffd98e]"
+                ? "text-white hover:text-[#d4af37]"
+                : "text-white hover:text-[#d4af37]"
             )}
           >
             المشاريع
@@ -89,8 +91,8 @@ export function Navbar() {
             className={cn(
               "transition-all duration-300 font-medium",
               scrolled
-                ? "bg-[#ffd98e] text-[#1d4241] hover:bg-[#e5c27f] border-none"
-                : "bg-[#ffd98e] text-[#1d4241] hover:bg-[#e5c27f] border-none"
+                ? "bg-[#d4af37] text-[#04174d] hover:bg-[#c09c20] border-none"
+                : "bg-[#d4af37] text-[#04174d] hover:bg-[#c09c20] border-none"
             )}
           >
             <Link href="/register-participant">انضم الآن</Link>
@@ -101,7 +103,7 @@ export function Navbar() {
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
             "md:hidden focus:outline-none",
-            scrolled ? "text-[#ffd98e]" : "text-white"
+            scrolled ? "text-[#d4af37]" : "text-white"
           )}
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -112,34 +114,34 @@ export function Navbar() {
         <div
           className={cn(
             "md:hidden pb-4 absolute w-full transition-all duration-300",
-            "bg-[#1d4241]/95 backdrop-blur-sm"
+            "bg-[#0d2a5e]/95 backdrop-blur-sm"
           )}
         >
           <div className="space-y-1 p-2">
             <Link
               href="/"
-              className="block py-2 px-4 text-white hover:bg-[#1d4241]/50 rounded-md transition-colors"
+              className="block py-2 px-4 text-white hover:bg-[#0d2a5e]/50 rounded-md transition-colors"
               onClick={() => setIsOpen(false)}
             >
               الرئيسية
             </Link>
             <Link
               href="/about"
-              className="block py-2 px-4 text-white hover:bg-[#1d4241]/50 rounded-md transition-colors"
+              className="block py-2 px-4 text-white hover:bg-[#0d2a5e]/50 rounded-md transition-colors"
               onClick={() => setIsOpen(false)}
             >
               حول الحدث
             </Link>
             <Link
               href="/register-participant"
-              className="block py-2 px-4 text-white hover:bg-[#1d4241]/50 rounded-md transition-colors"
+              className="block py-2 px-4 text-white hover:bg-[#0d2a5e]/50 rounded-md transition-colors"
               onClick={() => setIsOpen(false)}
             >
               التسجيل
             </Link>
             <Link
               href="/submit-project"
-              className="block py-2 px-4 text-white hover:bg-[#1d4241]/50 rounded-md transition-colors"
+              className="block py-2 px-4 text-white hover:bg-[#0d2a5e]/50 rounded-md transition-colors"
               onClick={() => setIsOpen(false)}
             >
               المشاريع
@@ -147,7 +149,7 @@ export function Navbar() {
             <div className="pt-2 px-4">
               <Link
                 href="/register-participant"
-                className="block py-2 px-4 text-center bg-[#ffd98e] text-[#1d4241] font-medium rounded-md hover:bg-[#e5c27f] transition-colors"
+                className="block py-2 px-4 text-center bg-[#d4af37] text-[#04174d] font-medium rounded-md hover:bg-[#c09c20] transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 انضم الآن

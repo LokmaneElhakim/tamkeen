@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect } from "react";
+
 export function EventHighlights() {
   const highlights = [
     {
@@ -40,46 +44,90 @@ export function EventHighlights() {
       title: "أطلق مستقبلك",
       description: "بناء قدراتك نحو النجاح",
     },
-  ]
+  ];
+
+  // Animation observer setup
+  useEffect(() => {
+    const animatedElements = document.querySelectorAll(".animate-on-scroll");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    animatedElements.forEach((element) => {
+      observer.observe(element);
+    });
+
+    return () => {
+      animatedElements.forEach((element) => {
+        observer.unobserve(element);
+      });
+    };
+  }, []);
 
   return (
-    <section className="py-16 bg-[#f9eee7]">
+    <section
+      style={{ background: "var(--gradient-secondary)" }}
+      className="py-20 text-white"
+    >
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-[#1d4241]">لماذا تمكين غرداية؟</h2>
+        <h2 className="text-3xl md:text-5xl font-bold text-center mb-16 text-[var(--color-gold)] animate-on-scroll opacity-0 transition-all duration-700 translate-y-8 animate-in:opacity-100 animate-in:translate-y-0">
+          لماذا تمكين غرداية؟
+        </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {highlights.map((highlight, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 text-center"
+              className="glass-effect p-6 rounded-2xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-strong)] hover:scale-105 transition-all duration-500 text-center animate-on-scroll opacity-0 translate-y-8"
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <span className="text-4xl mb-4 block">{highlight.icon}</span>
-              <h3 className="text-xl font-bold mb-2 text-[#1d4241]">{highlight.title}</h3>
-              <p className="text-sm text-gray-600">{highlight.description}</p>
+              <div className="h-16 w-16 rounded-full bg-[var(--color-gold)] flex items-center justify-center text-4xl mx-auto mb-4 neon-glow">
+                <span>{highlight.icon}</span>
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-[var(--color-gold)]">
+                {highlight.title}
+              </h3>
+              <p className="text-sm text-[var(--color-white)]">
+                {highlight.description}
+              </p>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-center mb-12">
-          <div className="bg-[#1d4241] text-white p-6 rounded-xl shadow-lg">
-            <p className="text-4xl font-extrabold text-[#ffd98e]">8</p>
-            <p className="text-lg mt-2">أيام تدريب مكثف</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-center mb-16">
+          <div className="bg-[var(--color-navy-dark)] p-8 rounded-2xl shadow-[var(--shadow-soft)] animate-on-scroll opacity-0 translate-x-[-50px] transition-all duration-700 animate-in:opacity-100 animate-in:translate-x-0">
+            <p className="text-5xl font-extrabold gradient-text">8</p>
+            <p className="text-lg mt-2 text-[var(--color-light-gray)]">
+              أيام تدريب مكثف
+            </p>
           </div>
-          <div className="bg-[#1d4241] text-white p-6 rounded-xl shadow-lg">
-            <p className="text-4xl font-extrabold text-[#ffd98e]">2</p>
-            <p className="text-lg mt-2">مسارات متخصصة</p>
+          <div className="bg-[var(--color-blue-deep)] p-8 rounded-2xl shadow-[var(--shadow-soft)] animate-on-scroll opacity-0 translate-x-[50px] transition-all duration-700 animate-in:opacity-100 animate-in:translate-x-0">
+            <p className="text-5xl font-extrabold text-[var(--color-gold)]">
+              2
+            </p>
+            <p className="text-lg mt-2 text-[var(--color-light-gray)]">
+              مسارات متخصصة
+            </p>
           </div>
         </div>
 
-        <div className="text-center">
+        <div className="text-center animate-on-scroll opacity-0 scale-90 transition-all duration-700 animate-in:opacity-100 animate-in:scale-100">
           <a
             href="#register"
-            className="bg-[#ef9c82] text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-opacity-90 transition-colors shadow-lg"
+            className="bg-[var(--color-gold)] text-[var(--color-navy-dark)] px-10 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:scale-105 transition-all duration-300 inline-block shadow-[var(--shadow-soft)] pulse-glow"
           >
             سجل الآن واصنع فارقًا
           </a>
         </div>
       </div>
     </section>
-  )
+  );
 }
