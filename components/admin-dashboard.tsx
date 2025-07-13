@@ -47,6 +47,13 @@ import {
   UserPlus,
   Calendar,
   Building2,
+  Clock,
+  MapPin,
+  ChevronUp,
+  ChevronDown,
+  Mail,
+  Phone,
+  User,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -64,8 +71,8 @@ import { DatabaseTest } from "./database-test";
 
 // Default program data structure
 const defaultTamkeenProgram = {
-  program_name: "تمكين غرداية 2025",
-  location: "غرداية، الجزائر",
+  program_name: "تمكين بريان 2025",
+  location: "بريان، الجزائر",
   dates: "22-29 أغسطس 2025",
   daily_time: "17:00 - 22:00",
   days: [],
@@ -791,7 +798,7 @@ export function AdminDashboard() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-4xl font-bold text-[#2b3761] mb-2">
-            لوحة تحكم تمكين غرداية 2025
+            لوحة تحكم تمكين بريان 2025
           </h1>
           <p className="text-gray-600">
             إدارة المشاركين وتتبع تقدم فعالية تمكين

@@ -88,7 +88,7 @@ export function AdminSidebar({ activeView, onViewChange }: AdminSidebarProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-[#04174d]">
-              تمكين غرداية
+              تمكين بريان
             </span>
             <span className="text-xs text-gray-500">لوحة الإدارة</span>
           </div>

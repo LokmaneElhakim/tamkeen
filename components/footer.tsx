@@ -82,7 +82,7 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-[#d4af37]" />
-              <span>غرداية، الجزائر</span>
+              <span>بريان، الجزائر</span>
             </li>
           </ul>
           <div className="flex space-x-4 space-x-reverse mt-4">
@@ -109,7 +109,7 @@ export function Footer() {
       </div>
 
       <div className="text-center text-gray-400 mt-12 border-t border-[#0d2a5e] pt-8">
-        <p>&copy; 2025 تمكين غرداية. جميع الحقوق محفوظة.</p>
+        <p>&copy; 2025 تمكين بريان. جميع الحقوق محفوظة.</p>
       </div>
     </footer>
   );

@@ -1,7 +1,7 @@
-import Hero from "@/components/hero"
-import { EventHighlights } from "@/components/event-highlights"
-import CountdownSection from "@/components/countdown-section"
-import { CallToAction } from "@/components/call-to-action"
+import Hero from "@/components/hero";
+import { EventHighlights } from "@/components/event-highlights";
+import CountdownSection from "@/components/countdown-section";
+import { CallToAction } from "@/components/call-to-action";
 
 export default function HomePage() {
   return (
@@ -11,5 +11,5 @@ export default function HomePage() {
       <EventHighlights />
       <CallToAction />
     </div>
-  )
+  );
 }
