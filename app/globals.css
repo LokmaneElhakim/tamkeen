@@ -4,12 +4,14 @@
 
 @layer base {
   :root {
-    /* Empowerment-Focused Teal/Green Palette */
+    /* Primary Teal-Focused Empowerment Palette */
     --color-primary: #059669;
     --color-primary-light: #34d399;
     --color-primary-dark: #047857;
     --color-accent: #0d9488;
     --color-accent-light: #14b8a6;
+
+    /* Supporting Colors */
     --color-navy-dark: #1e3a8a;
     --color-slate-dark: #334155;
     --color-slate-medium: #475569;
@@ -17,50 +19,50 @@
     --color-neutral-dark: #374151;
     --color-neutral-medium: #4b5563;
 
-    /* Empowerment-Focused Backgrounds */
+    /* Backgrounds & Glass Effects */
     --bg-primary: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
     --bg-secondary: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);
     --bg-tertiary: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
     --bg-accent: linear-gradient(
       135deg,
-      rgba(16, 185, 129, 0.12) 0%,
-      rgba(5, 150, 105, 0.1) 100%
+      rgba(16, 185, 129, 0.12),
+      rgba(5, 150, 105, 0.1)
     );
     --bg-surface: rgba(240, 253, 250, 0.92);
     --bg-glass: rgba(204, 251, 241, 0.8);
     --bg-elevated: rgba(167, 243, 208, 0.6);
 
-    /* Empowerment Gradients */
-    --gradient-primary: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    --gradient-secondary: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #10b981, #059669);
+    --gradient-secondary: linear-gradient(135deg, #34d399, #10b981);
     --gradient-surface: linear-gradient(
       135deg,
-      rgba(240, 253, 250, 0.95) 0%,
-      rgba(236, 253, 245, 0.85) 100%
+      rgba(240, 253, 250, 0.95),
+      rgba(236, 253, 245, 0.85)
     );
     --gradient-card: linear-gradient(
       135deg,
-      rgba(204, 251, 241, 0.9) 0%,
-      rgba(167, 243, 208, 0.7) 100%
+      rgba(204, 251, 241, 0.9),
+      rgba(167, 243, 208, 0.7)
     );
     --gradient-glass: linear-gradient(
       135deg,
-      rgba(16, 185, 129, 0.1) 0%,
-      rgba(22, 2, 203, 0.12) 60%
+      rgba(16, 185, 129, 0.1),
+      rgba(22, 2, 203, 0.12)
     );
 
-    /* Empowerment Shadows */
-    --shadow-soft: 0 1px 3px 0 rgba(5, 150, 105, 0.1),
-      0 1px 2px 0 rgba(5, 150, 105, 0.08);
+    /* Shadows */
+    --shadow-soft: 0 1px 3px rgba(5, 150, 105, 0.1),
+      0 1px 2px rgba(5, 150, 105, 0.08);
     --shadow-medium: 0 4px 6px -1px rgba(5, 150, 105, 0.15),
       0 2px 4px -1px rgba(5, 150, 105, 0.1);
     --shadow-strong: 0 10px 25px -3px rgba(5, 150, 105, 0.15),
       0 4px 6px -2px rgba(5, 150, 105, 0.1);
     --shadow-glow: 0 0 20px rgba(5, 150, 105, 0.4),
       0 0 40px rgba(5, 150, 105, 0.2);
-    --shadow-inner: inset 0 2px 4px 0 rgba(5, 150, 105, 0.1);
+    --shadow-inner: inset 0 2px 4px rgba(5, 150, 105, 0.1);
 
-    /* Empowerment Color System */
+    /* Tailwind-Compatible Color Tokens */
     --background: 248 250 252;
     --foreground: 15 23 42;
     --card: 255 255 255;
@@ -97,12 +99,10 @@
     overflow-x: hidden;
   }
 
-  /* Prevent Y-axis bouncing animations while preserving X-axis animations */
   .no-y-bounce * {
     transform: translateY(0) !important;
   }
 
-  /* Override hover scale effects to only affect X-axis */
   .hover\:scale-105:hover {
     transform: scaleX(1.05) scaleY(1) !important;
   }
@@ -116,7 +116,6 @@
     transform: scaleX(1.1) scaleY(1) !important;
   }
 
-  /* Preserve only horizontal animations */
   .animate-flow-elegant,
   .animate-flow-reverse-elegant,
   .animate-float {
@@ -133,7 +132,6 @@
     }
   }
 
-  /* Override Framer Motion transforms to remove Y movement */
   [style*="translateY"] {
     transform: translateX(var(--tw-translate-x, 0)) translateY(0)
       rotate(var(--tw-rotate, 0)) skewX(var(--tw-skew-x, 0))
@@ -153,5 +151,43 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
     min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    z-index: 150;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(240, 253, 250, 0.3);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 10px;
+    border: 2px solid rgba(240, 253, 250, 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: rgba(240, 253, 250, 0.3);
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #10b981 rgba(240, 253, 250, 0.3);
+  }
+
+  body {
+    position: relative;
+  }
+
+  body::-webkit-scrollbar {
+    z-index: 150 !important;
   }
 }

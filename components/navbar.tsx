@@ -82,7 +82,7 @@ export function Navbar() {
             alt="Tamkeen Logo"
             width={60}
             height={35}
-            className="inline-block mr-2 drop-shadow-lg"
+            className="inline-block mr-2 drop-shadow-lg w-10 h-5 sm:w-[50px] sm:h-[30px]"
           />
         </Link>
 
@@ -155,9 +155,9 @@ export function Navbar() {
           )}
         >
           {isOpen ? (
-            <X className="h-12 w-12 sm:w-6 sm:h-6" />
+            <X className="h-10 w-10 sm:w-6 sm:h-6" />
           ) : (
-            <Menu className="h-12 w-12 sm:w-6 sm:h-6" />
+            <Menu className="h-10 w-10 sm:w-6 sm:h-6" />
           )}
         </button>
       </nav>
@@ -166,40 +166,40 @@ export function Navbar() {
         <div
           className={cn(
             "md:hidden pb-4 absolute w-full transition-all duration-500 ease-out",
-            "bg-white/10 backdrop-blur-3xl border-b border-white/50 shadow-2xl shadow-black/40"
+            "bg-[#0d2a5e]/20 backdrop-blur-3xl border-b border-[#d4af37]/30 shadow-2xl shadow-black/40"
           )}
         >
           {/* Multiple enhanced glass layers for mobile menu */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/10 backdrop-blur-3xl" />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/8 via-white/15 to-white/8 backdrop-blur-2xl" />
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-blue-200/10 backdrop-blur-xl" />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-100/5 to-white/10 backdrop-blur-sm opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0d2a5e]/25 to-[#1a3a73]/15 backdrop-blur-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/8 via-[#d4af37]/15 to-[#d4af37]/8 backdrop-blur-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#f2f2f2]/5 to-[#d4af37]/10 backdrop-blur-xl" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0d2a5e]/5 to-[#f2f2f2]/10 backdrop-blur-sm opacity-30" />
 
           <div className="relative space-y-1 p-2 z-10">
             <Link
               href="/"
-              className="block py-3 px-4 text-white hover:bg-white/20 rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-white/30 hover:shadow-lg"
+              className="block py-3 px-4 text-[#f2f2f2] hover:bg-[#d4af37]/20 hover:text-[#d4af37] rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-[#d4af37]/30 hover:shadow-lg font-medium"
               onClick={() => setIsOpen(false)}
             >
               الرئيسية
             </Link>
             <Link
               href="/about"
-              className="block py-3 px-4 text-white hover:bg-white/20 rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-white/30 hover:shadow-lg"
+              className="block py-3 px-4 text-[#f2f2f2] hover:bg-[#d4af37]/20 hover:text-[#d4af37] rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-[#d4af37]/30 hover:shadow-lg font-medium"
               onClick={() => setIsOpen(false)}
             >
               حول الحدث
             </Link>
             <Link
               href="/register-participant"
-              className="block py-3 px-4 text-white hover:bg-white/20 rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-white/30 hover:shadow-lg"
+              className="block py-3 px-4 text-[#f2f2f2] hover:bg-[#d4af37]/20 hover:text-[#d4af37] rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-[#d4af37]/30 hover:shadow-lg font-medium"
               onClick={() => setIsOpen(false)}
             >
               التسجيل
             </Link>
             <Link
               href="/submit-project"
-              className="block py-3 px-4 text-white hover:bg-white/20 rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-white/30 hover:shadow-lg"
+              className="block py-3 px-4 text-[#f2f2f2] hover:bg-[#d4af37]/20 hover:text-[#d4af37] rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-[#d4af37]/30 hover:shadow-lg font-medium"
               onClick={() => setIsOpen(false)}
             >
               المشاريع
@@ -207,7 +207,7 @@ export function Navbar() {
             <div className="pt-2 px-4">
               <Link
                 href="/register-participant"
-                className="block py-3 px-4 text-center bg-[#d4af37] text-[#0d2a5e] font-medium rounded-lg hover:bg-[#c09c20] shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm border border-white/20 hover:scale-105"
+                className="block py-3 px-4 text-center bg-[#d4af37] text-[#0d2a5e] font-bold rounded-full hover:bg-[#c09c20] shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm border border-[#d4af37]/20 hover:scale-105"
                 onClick={() => setIsOpen(false)}
               >
                 انضم الآن
