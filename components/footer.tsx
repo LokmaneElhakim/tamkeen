@@ -38,7 +38,7 @@ export function Footer() {
             </li>
             <li>
               <Link
-                href="/submit-project"
+                href="/register-startup"
                 className="hover:text-[#d4af37] transition-colors"
               >
                 تقديم مشروع

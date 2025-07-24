@@ -124,7 +124,7 @@ export function Navbar() {
             التسجيل
           </Link>
           <Link
-            href="/submit-project"
+            href="/register-startup"
             className={cn(
               "transition-all duration-300 font-medium relative",
               scrolled
@@ -198,7 +198,7 @@ export function Navbar() {
               التسجيل
             </Link>
             <Link
-              href="/submit-project"
+              href="/register-startup"
               className="block py-3 px-4 text-[#f2f2f2] hover:bg-[#d4af37]/20 hover:text-[#d4af37] rounded-lg transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-[#d4af37]/30 hover:shadow-lg font-medium"
               onClick={() => setIsOpen(false)}
             >

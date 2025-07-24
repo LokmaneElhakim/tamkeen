@@ -24,7 +24,7 @@ export default function AboutPage() {
               حول الحدث
             </span>
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[#d4af37] to-[#f2f2f2] bg-clip-text text-transparent font-[Tajawal]">
             تمكين بريان 2025
           </h1>
@@ -84,15 +84,26 @@ export default function AboutPage() {
               borderColor: "border-[#d4af37]/30",
             },
           ].map((item, index) => (
-            <div key={index} className={`bg-gradient-to-br ${item.bgGradient} backdrop-blur-sm border ${item.borderColor} shadow-lg rounded-2xl p-6 hover:scale-105 hover:shadow-xl transition-all duration-300 group relative overflow-hidden`}>
-              <div className={`absolute inset-0 bg-gradient-to-br ${item.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl`}></div>
-              
+            <div
+              key={index}
+              className={`bg-gradient-to-br ${item.bgGradient} backdrop-blur-sm border ${item.borderColor} shadow-lg rounded-2xl p-6 hover:scale-105 hover:shadow-xl transition-all duration-300 group relative overflow-hidden`}
+            >
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${item.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl`}
+              ></div>
+
               <div className="w-12 h-12 rounded-xl bg-[#0d2a5e]/50 backdrop-blur-sm shadow-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 relative z-10">
                 <item.icon className={`h-6 w-6 ${item.iconColor}`} />
               </div>
-              <h3 className="text-lg font-bold text-[#f2f2f2] mb-2 relative z-10">{item.title}</h3>
-              <p className="text-[#f2f2f2]/80 text-sm mb-1 relative z-10">{item.description}</p>
-              <p className="text-xs text-[#f2f2f2]/60 relative z-10">{item.detail}</p>
+              <h3 className="text-lg font-bold text-[#f2f2f2] mb-2 relative z-10">
+                {item.title}
+              </h3>
+              <p className="text-[#f2f2f2]/80 text-sm mb-1 relative z-10">
+                {item.description}
+              </p>
+              <p className="text-xs text-[#f2f2f2]/60 relative z-10">
+                {item.detail}
+              </p>
             </div>
           ))}
         </div>
@@ -107,10 +118,10 @@ export default function AboutPage() {
               الأهداف الرئيسية
             </h2>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             <ul className="space-y-4">
-              { [
+              {[
                 "تأهيل الشباب لولوج عالم ريادة الأعمال والتوظيف",
                 "تمكين الشباب من مهارات عملية وتقنية وشخصية",
                 "ربط الشركات المحلية بالشباب الواعد",
@@ -133,7 +144,8 @@ export default function AboutPage() {
                 رؤية الحدث
               </h4>
               <p className="text-[#f2f2f2]/90 leading-relaxed">
-                بناء جيل من الشباب القادر على المساهمة الفعالة في التنمية الاقتصادية والاجتماعية للمنطقة من خلال الابتكار وريادة الأعمال.
+                بناء جيل من الشباب القادر على المساهمة الفعالة في التنمية
+                الاقتصادية والاجتماعية للمنطقة من خلال الابتكار وريادة الأعمال.
               </p>
             </div>
           </div>
@@ -144,9 +156,11 @@ export default function AboutPage() {
           {/* Phase 1 */}
           <div className="bg-gradient-to-br from-blue-600/20 to-blue-700/10 backdrop-blur-sm border border-blue-400/30 shadow-2xl rounded-3xl p-8 relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            
+
             <div className="flex items-center gap-3 mb-6 relative z-10">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white flex items-center justify-center font-bold shadow-lg">1</div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white flex items-center justify-center font-bold shadow-lg">
+                1
+              </div>
               <h3 className="text-2xl font-bold text-[#f2f2f2] font-[Tajawal]">
                 المرحلة الأولى
               </h3>
@@ -162,7 +176,7 @@ export default function AboutPage() {
               جلسات تدريبية مكثفة تغطي مسارين متخصصين: ريادة الأعمال والمشاريع
               الناشئة، والاستعداد للتوظيف.
             </p>
-            
+
             <div className="space-y-3 relative z-10">
               <div className="bg-blue-600/20 border border-blue-400/30 p-4 rounded-xl">
                 <strong className="text-blue-400">المسار الأول:</strong>
@@ -182,9 +196,11 @@ export default function AboutPage() {
           {/* Phase 2 */}
           <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-700/10 backdrop-blur-sm border border-emerald-400/30 shadow-2xl rounded-3xl p-8 relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            
+
             <div className="flex items-center gap-3 mb-6 relative z-10">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white flex items-center justify-center font-bold shadow-lg">2</div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white flex items-center justify-center font-bold shadow-lg">
+                2
+              </div>
               <h3 className="text-2xl font-bold text-[#f2f2f2] font-[Tajawal]">
                 المرحلة الثانية
               </h3>
@@ -198,9 +214,9 @@ export default function AboutPage() {
               عروض المشاريع، معرض الشركات، وفرص التواصل بين الشركات والشباب
               والمنظمين.
             </p>
-            
+
             <div className="space-y-2 relative z-10">
-              { [
+              {[
                 {
                   time: "07:30-08:00",
                   activity: "الاستقبال والتسجيل",
@@ -218,7 +234,10 @@ export default function AboutPage() {
                   activity: "جلسة نقاش مفتوحة",
                 },
               ].map((item, index) => (
-                <div key={index} className="bg-emerald-600/20 border border-emerald-400/30 p-3 rounded-lg flex justify-between items-center">
+                <div
+                  key={index}
+                  className="bg-emerald-600/20 border border-emerald-400/30 p-3 rounded-lg flex justify-between items-center"
+                >
                   <span className="text-emerald-400 font-medium text-sm">
                     {item.time}
                   </span>

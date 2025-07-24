@@ -601,74 +601,74 @@ export default function AdminDashboard() {
       case "dashboard":
         return (
           <div>
-            <h1 className="text-4xl font-bold text-[#1d4241] mb-8">
+            <h1 className="text-4xl font-bold text-blue-100 mb-8">
               Tamkeen Event Analytics Dashboard
             </h1>
 
             {/* Enhanced Statistics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-[#1d4241] to-[#123332] text-white">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-800 to-blue-600 text-blue-50">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-blue-100">
+                      <p className="text-sm font-medium text-blue-200">
                         Total Participants
                       </p>
                       <p className="text-3xl font-bold">
                         {stats.totalParticipants}
                       </p>
-                      <p className="text-xs text-blue-200 mt-1">
+                      <p className="text-xs text-blue-300 mt-1">
                         Registered for event
                       </p>
                     </div>
-                    <Users className="h-8 w-8 text-[#ffd98e]" />
+                    <Users className="h-8 w-8 text-cyan-300" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-700 to-blue-500 text-blue-50">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-green-100">
+                      <p className="text-sm font-medium text-blue-200">
                         On Track
                       </p>
                       <p className="text-3xl font-bold">{stats.onTrack}</p>
-                      <p className="text-xs text-green-200 mt-1">
+                      <p className="text-xs text-blue-300 mt-1">
                         Good attendance
                       </p>
                     </div>
-                    <TrendingUp className="h-8 w-8 text-green-100" />
+                    <TrendingUp className="h-8 w-8 text-cyan-300" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-600 to-cyan-400 text-blue-950">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-yellow-100">
+                      <p className="text-sm font-medium text-cyan-900/80">
                         At Risk
                       </p>
                       <p className="text-3xl font-bold">{stats.atRisk}</p>
-                      <p className="text-xs text-yellow-200 mt-1">1 absence</p>
+                      <p className="text-xs text-cyan-900/60 mt-1">1 absence</p>
                     </div>
-                    <AlertTriangle className="h-8 w-8 text-yellow-100" />
+                    <AlertTriangle className="h-8 w-8 text-cyan-900" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-red-500 to-pink-600 text-white">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-900 to-blue-700 text-blue-100">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-red-100">
+                      <p className="text-sm font-medium text-blue-200">
                         Excluded
                       </p>
                       <p className="text-3xl font-bold">{stats.excluded}</p>
-                      <p className="text-xs text-red-200 mt-1">2+ absences</p>
+                      <p className="text-xs text-blue-300 mt-1">2+ absences</p>
                     </div>
-                    <TrendingDown className="h-8 w-8 text-red-100" />
+                    <TrendingDown className="h-8 w-8 text-cyan-300" />
                   </div>
                 </CardContent>
               </Card>

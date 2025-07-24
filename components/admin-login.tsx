@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -30,12 +29,10 @@ export function AdminLogin() {
     setIsLoading(true);
     setError("");
 
-    // Simple authentication (in production, use proper auth)
     if (
       credentials.username === "admin" &&
       credentials.password === "youth2024"
     ) {
-      // Set session/cookie here
       localStorage.setItem("adminAuth", "true");
       router.push("/admin/dashboard");
     } else {
@@ -46,13 +43,15 @@ export function AdminLogin() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto shadow-xl border-none bg-white dark:bg-[#0e1a3a]">
       <CardHeader className="text-center">
-        <div className="mx-auto bg-[#f2f2f2] w-12 h-12 rounded-full flex items-center justify-center mb-4">
+        <div className="mx-auto w-12 h-12 rounded-full bg-[#e0e7ff]/30 flex items-center justify-center mb-4">
           <Shield className="h-6 w-6 text-[#04174d]" />
         </div>
-        <CardTitle className="text-[#04174d]">Admin Login</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-[#04174d] dark:text-white">
+          Admin Login
+        </CardTitle>
+        <CardDescription className="text-gray-600 dark:text-gray-300">
           Access the admin dashboard to manage registrations and attendance
         </CardDescription>
       </CardHeader>
@@ -72,6 +71,7 @@ export function AdminLogin() {
                 }))
               }
               placeholder="Enter username"
+              className="bg-white dark:bg-[#0e1a3a] text-[#04174d] dark:text-white ring"
             />
           </div>
 
@@ -80,6 +80,7 @@ export function AdminLogin() {
             <Input
               id="password"
               type="password"
+              className="bg-white dark:bg-[#0e1a3a] text-[#04174d] dark:text-white"
               required
               value={credentials.password}
               onChange={(e) =>
