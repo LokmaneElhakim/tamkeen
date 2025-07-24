@@ -30,45 +30,60 @@ import {
   GraduationCap,
   Briefcase,
 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import axios from "axios";
+
+const participantSchema = z.object({
+  firstName: z.string().min(1, "الاسم الأول مطلوب"),
+  email: z.string().email("البريد الإلكتروني غير صالح"),
+  phone: z.string().min(10, "رقم الهاتف يجب أن يتكون من 10 أرقام على الأقل"),
+  age: z
+    .number({ invalid_type_error: "العمر مطلوب" })
+    .min(18, "يجب أن يكون العمر 18 عامًا على الأقل")
+    .max(35, "يجب ألا يتجاوز العمر 35 عامًا"),
+  education: z.string().min(1, "المستوى التعليمي مطلوب"),
+  currentStatus: z.string().min(1, "الوضع الحالي مطلوب"),
+  track: z.string().min(1, "المسار مطلوب"),
+  motivation: z.string().min(1, "سبب المشاركة مطلوب"),
+  hasLaptop: z.boolean(),
+  agreeTerms: z.boolean().refine((val) => val === true, {
+    message: "يجب الموافقة على الشروط والأحكام",
+  }),
+});
+
+type ParticipantFormValues = z.infer<typeof participantSchema>;
 
 export function ParticipantRegistrationForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    age: "",
-    city: "",
-    education: "",
-    currentStatus: "",
-    track: "",
-    experience: "",
-    motivation: "",
-    hasLaptop: false,
-    agreeTerms: false,
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<ParticipantFormValues>({
+    resolver: zodResolver(participantSchema),
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.agreeTerms) return;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-    setIsSubmitting(true);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData);
-
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+  const onSubmit = async (data: ParticipantFormValues) => {
+    try {
+      setIsSubmitting(true);
+      const response = await axios.post("/api/participants", data);
+      alert("تم التسجيل بنجاح!");
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+    } catch (error: any) {
+      alert(error.response?.data?.error || "حدث خطأ ما");
+      setIsSubmitting(false);
+    }
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const hasLaptop = watch("hasLaptop");
+  const agreeTerms = watch("agreeTerms");
 
   if (isSubmitted) {
     return (
@@ -107,7 +122,7 @@ export function ParticipantRegistrationForm() {
         </div>
 
         <div className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* Personal Information */}
             <div className="bg-gradient-to-br from-[#0d2a5e]/60 to-[#1a3a73]/40 backdrop-blur-sm border border-[#d4af37]/30 shadow-lg rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-6">
@@ -129,36 +144,17 @@ export function ParticipantRegistrationForm() {
                   </Label>
                   <Input
                     id="firstName"
-                    value={formData.firstName}
-                    onChange={(e) =>
-                      handleInputChange("firstName", e.target.value)
-                    }
+                    {...register("firstName")}
                     className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] placeholder:text-[#f2f2f2]/60 text-right h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20"
                     dir="rtl"
                     required
                   />
+                  {errors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.firstName.message}
+                    </p>
+                  )}
                 </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="lastName"
-                    className="text-[#f2f2f2] font-medium"
-                  >
-                    اسم العائلة *
-                  </Label>
-                  <Input
-                    id="lastName"
-                    value={formData.lastName}
-                    onChange={(e) =>
-                      handleInputChange("lastName", e.target.value)
-                    }
-                    className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] placeholder:text-[#f2f2f2]/60 text-right h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20"
-                    dir="rtl"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="space-y-2">
                   <Label
                     htmlFor="email"
@@ -170,14 +166,21 @@ export function ParticipantRegistrationForm() {
                   <Input
                     id="email"
                     type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    {...register("email")}
                     className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] placeholder:text-[#f2f2f2]/60 text-left h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20"
                     dir="ltr"
                     placeholder="your.email@example.com"
                     required
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="space-y-2">
                   <Label
                     htmlFor="phone"
@@ -189,17 +192,18 @@ export function ParticipantRegistrationForm() {
                   <Input
                     id="phone"
                     type="tel"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    {...register("phone")}
                     className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] placeholder:text-[#f2f2f2]/60 text-left h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20"
                     dir="ltr"
                     placeholder="+213 XXX XXX XXX"
                     required
                   />
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="space-y-2">
                   <Label htmlFor="age" className="text-[#f2f2f2] font-medium">
                     العمر *
@@ -207,30 +211,15 @@ export function ParticipantRegistrationForm() {
                   <Input
                     id="age"
                     type="number"
-                    min="18"
-                    max="35"
-                    value={formData.age}
-                    onChange={(e) => handleInputChange("age", e.target.value)}
+                    {...register("age", { valueAsNumber: true })}
                     className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] placeholder:text-[#f2f2f2]/60 h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20"
                     required
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="city"
-                    className="text-[#f2f2f2] font-medium flex items-center gap-2"
-                  >
-                    <MapPin className="h-4 w-4 text-[#d4af37]" />
-                    المدينة *
-                  </Label>
-                  <Input
-                    id="city"
-                    value={formData.city}
-                    onChange={(e) => handleInputChange("city", e.target.value)}
-                    className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] placeholder:text-[#f2f2f2]/60 text-right h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20"
-                    dir="rtl"
-                    required
-                  />
+                  {errors.age && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.age.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -255,9 +244,7 @@ export function ParticipantRegistrationForm() {
                     المستوى التعليمي *
                   </Label>
                   <Select
-                    onValueChange={(value) =>
-                      handleInputChange("education", value)
-                    }
+                    onValueChange={(value) => setValue("education", value)}
                   >
                     <SelectTrigger className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] text-right h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20">
                       <SelectValue placeholder="اختر المستوى التعليمي" />
@@ -306,9 +293,7 @@ export function ParticipantRegistrationForm() {
                     الوضع الحالي *
                   </Label>
                   <Select
-                    onValueChange={(value) =>
-                      handleInputChange("currentStatus", value)
-                    }
+                    onValueChange={(value) => setValue("currentStatus", value)}
                   >
                     <SelectTrigger className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] text-right h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20">
                       <SelectValue placeholder="اختر وضعك الحالي" />
@@ -352,9 +337,7 @@ export function ParticipantRegistrationForm() {
                   <Label htmlFor="track" className="text-[#f2f2f2] font-medium">
                     المسار المفضل *
                   </Label>
-                  <Select
-                    onValueChange={(value) => handleInputChange("track", value)}
-                  >
+                  <Select onValueChange={(value) => setValue("track", value)}>
                     <SelectTrigger className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] text-right h-12 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]/20">
                       <SelectValue placeholder="اختر المسار المناسب لك" />
                     </SelectTrigger>
@@ -390,10 +373,7 @@ export function ParticipantRegistrationForm() {
                   </Label>
                   <Textarea
                     id="experience"
-                    value={formData.experience}
-                    onChange={(e) =>
-                      handleInputChange("experience", e.target.value)
-                    }
+                    {...register("experience")}
                     placeholder="اذكر أي خبرة سابقة في ريادة الأعمال أو العمل..."
                     className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] placeholder:text-[#f2f2f2]/60 text-right rounded-xl min-h-[100px] resize-none focus:border-[#d4af37] focus:ring-[#d4af37]/20"
                     dir="rtl"
@@ -414,16 +394,18 @@ export function ParticipantRegistrationForm() {
                 </Label>
                 <Textarea
                   id="motivation"
-                  value={formData.motivation}
-                  onChange={(e) =>
-                    handleInputChange("motivation", e.target.value)
-                  }
+                  {...register("motivation")}
                   placeholder="أخبرنا عن أهدافك وتطلعاتك..."
                   className="bg-[#0d2a5e]/50 border-[#d4af37]/30 text-[#f2f2f2] placeholder:text-[#f2f2f2]/60 text-right rounded-xl min-h-[120px] resize-none focus:border-[#d4af37] focus:ring-[#d4af37]/20"
                   dir="rtl"
                   rows={5}
                   required
                 />
+                {errors.motivation && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.motivation.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -437,10 +419,7 @@ export function ParticipantRegistrationForm() {
                 <div className="flex items-center space-x-3 space-x-reverse">
                   <Checkbox
                     id="hasLaptop"
-                    checked={formData.hasLaptop}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("hasLaptop", checked as boolean)
-                    }
+                    {...register("hasLaptop")}
                     className="border-[#d4af37]/30 data-[state=checked]:bg-[#d4af37] data-[state=checked]:text-[#0d2a5e] w-5 h-5"
                   />
                   <Label
@@ -454,10 +433,7 @@ export function ParticipantRegistrationForm() {
                 <div className="flex items-start space-x-3 space-x-reverse">
                   <Checkbox
                     id="agreeTerms"
-                    checked={formData.agreeTerms}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("agreeTerms", checked as boolean)
-                    }
+                    {...register("agreeTerms")}
                     className="border-[#d4af37]/30 data-[state=checked]:bg-[#d4af37] data-[state=checked]:text-[#0d2a5e] w-5 h-5 mt-1"
                     required
                   />
@@ -477,7 +453,7 @@ export function ParticipantRegistrationForm() {
               <Button
                 type="submit"
                 className="bg-[#d4af37] hover:bg-[#c09c20] text-[#0d2a5e] font-bold text-lg px-12 py-4 h-14 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                disabled={!formData.agreeTerms || isSubmitting}
+                disabled={!agreeTerms || isSubmitting}
               >
                 {isSubmitting ? (
                   <>

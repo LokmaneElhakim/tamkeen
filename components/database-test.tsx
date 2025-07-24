@@ -1,33 +1,45 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, Database, CheckCircle, XCircle, RefreshCw, AlertTriangle } from "lucide-react"
-import { testConnection } from "@/lib/database"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Loader2,
+  Database,
+  CheckCircle,
+  XCircle,
+  RefreshCw,
+  AlertTriangle,
+} from "lucide-react";
+import { testConnection } from "@/lib/database";
 
 export function DatabaseTest() {
-  const [testing, setTesting] = useState(false)
-  const [result, setResult] = useState<{ success: boolean; count?: number; error?: string } | null>(null)
+  const [testing, setTesting] = useState(false);
+  const [result, setResult] = useState<{
+    success: boolean;
+    count?: number;
+    error?: string;
+  } | null>(null);
 
   const runTest = async () => {
-    setTesting(true)
-    setResult(null)
+    setTesting(true);
+    setResult(null);
 
     try {
-      const testResult = await testConnection()
-      setResult(testResult)
+      const testResult = await testConnection();
+      setResult(testResult);
     } catch (error) {
       setResult({
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
-      })
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      });
     } finally {
-      setTesting(false)
+      setTesting(false);
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-2xl border-2 border-dashed border-gray-300">
@@ -65,10 +77,15 @@ export function DatabaseTest() {
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 <AlertDescription className="text-green-800">
                   <div className="space-y-2">
-                    <p className="font-semibold">✅ تم الاتصال بقاعدة البيانات بنجاح!</p>
+                    <p className="font-semibold">
+                      ✅ تم الاتصال بقاعدة البيانات بنجاح!
+                    </p>
                     <div className="flex items-center gap-2">
                       <span>عدد المشاركين الحالي:</span>
-                      <Badge variant="outline" className="text-green-700 border-green-300">
+                      <Badge
+                        variant="outline"
+                        className="text-green-700 border-green-300"
+                      >
                         {result.count || 0}
                       </Badge>
                     </div>
@@ -80,7 +97,9 @@ export function DatabaseTest() {
                 <XCircle className="h-4 w-4 text-red-600" />
                 <AlertDescription className="text-red-800">
                   <div className="space-y-2">
-                    <p className="font-semibold">❌ فشل في الاتصال بقاعدة البيانات</p>
+                    <p className="font-semibold">
+                      ❌ فشل في الاتصال بقاعدة البيانات
+                    </p>
                     <p className="text-sm">{result.error}</p>
                   </div>
                 </AlertDescription>
@@ -88,14 +107,16 @@ export function DatabaseTest() {
             )}
 
             {!result.success && (
-              <Alert className="border-yellow-200 bg-yellow-50">
+              <Alert className="border-gray-200 bg-gray-50">
                 <AlertTriangle className="h-4 w-4 text-yellow-600" />
                 <AlertDescription className="text-yellow-800">
                   <div className="space-y-2">
                     <p className="font-semibold">خطوات استكشاف الأخطاء:</p>
                     <ol className="text-sm space-y-1 list-decimal list-inside">
                       <li>تأكد من تشغيل خدمة Supabase</li>
-                      <li>تحقق من متغيرات البيئة (SUPABASE_URL, SUPABASE_ANON_KEY)</li>
+                      <li>
+                        تحقق من متغيرات البيئة (SUPABASE_URL, SUPABASE_ANON_KEY)
+                      </li>
                       <li>تأكد من تنفيذ سكريبت إنشاء الجداول</li>
                       <li>تحقق من إعدادات Row Level Security</li>
                       <li>تأكد من اتصال الإنترنت</li>
@@ -111,11 +132,14 @@ export function DatabaseTest() {
           <Alert className="border-blue-200 bg-blue-50">
             <Database className="h-4 w-4 text-blue-600" />
             <AlertDescription className="text-blue-800">
-              <p>اضغط على الزر أعلاه لاختبار الاتصال بقاعدة البيانات والتأكد من عمل النظام بشكل صحيح.</p>
+              <p>
+                اضغط على الزر أعلاه لاختبار الاتصال بقاعدة البيانات والتأكد من
+                عمل النظام بشكل صحيح.
+              </p>
             </AlertDescription>
           </Alert>
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

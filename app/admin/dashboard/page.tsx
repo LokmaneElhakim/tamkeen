@@ -643,7 +643,7 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-yellow-500 to-orange-500 text-white">
+              <Card className="">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -809,7 +809,7 @@ export default function AdminDashboard() {
                             alert.total >= 2
                               ? "bg-red-100 border-red-300"
                               : alert.total === 1
-                              ? "bg-yellow-100 border-yellow-300"
+                              ? "bg-teal-100 border-teal-300"
                               : "bg-green-100 border-green-300"
                           }`}
                         >

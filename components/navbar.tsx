@@ -82,7 +82,7 @@ export function Navbar() {
             alt="Tamkeen Logo"
             width={60}
             height={35}
-            className="inline-block mr-2 drop-shadow-lg w-10 h-5 sm:w-[50px] sm:h-[30px]"
+            className="inline-block mr-2 drop-shadow-lg w-12 h-6 sm:w-14 sm:h-14"
           />
         </Link>
 

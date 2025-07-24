@@ -12,6 +12,14 @@ export default function CountdownSection() {
     seconds: 0,
   });
 
+  // Pre-generate random values for particles to ensure consistency
+  const particles = Array.from({ length: 25 }).map(() => ({
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    animationDelay: `${Math.random() * 8}s`,
+    animationDuration: `${6 + Math.random() * 12}s`,
+  }));
+
   // Animation variants for staggered animations
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -61,20 +69,13 @@ export default function CountdownSection() {
     <section className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-950 text-slate-100 py-20 md:py-32 flex items-center min-h-[60vh] overflow-hidden">
       {/* Enhanced animated background elements to match event highlights */}
       <div className="absolute inset-0 w-full h-full overflow-hidden opacity-60 pointer-events-none">
-        {/* Enhanced blue gradient orbs */}
-
         {/* Moving particles */}
         <div className="absolute inset-0">
-          {Array.from({ length: 25 }).map((_, i) => (
+          {particles.map((particle, i) => (
             <div
               key={i}
               className="absolute w-1 h-1 bg-blue-400/30 rounded-full animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 8}s`,
-                animationDuration: `${6 + Math.random() * 12}s`,
-              }}
+              style={particle}
             />
           ))}
         </div>
@@ -209,7 +210,7 @@ export default function CountdownSection() {
         <motion.a
           variants={itemVariants}
           whileHover={{ scale: 1.05 }}
-          href="#register"
+          href="/register"
           className="inline-block bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900 px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:shadow-cyan-500/25 transition-all duration-300"
         >
           سجل الآن

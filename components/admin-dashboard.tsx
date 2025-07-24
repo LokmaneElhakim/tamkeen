@@ -940,7 +940,7 @@ export function AdminDashboard() {
                 <span className="text-sm text-gray-600">الجلسات المجدولة:</span>
                 <span className="font-semibold">{analytics.totalSessions}</span>
               </div>
-              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="mt-4 p-3 bg-teal-50 border border-teal-200 rounded-lg">
                 <p className="text-sm text-yellow-800 font-medium">
                   ⚠️ الغياب يومين يؤدي للإقصاء
                 </p>
