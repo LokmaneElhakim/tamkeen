@@ -159,28 +159,28 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: rgba(240, 253, 250, 0.3);
+    background: rgba(30, 58, 138, 0.15); /* navy blue, semi-transparent */
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, #1512c7, #010fa6);
     border-radius: 10px;
-    border: 2px solid rgba(240, 253, 250, 0.3);
+    border: 2px solid rgba(30, 58, 138, 0.15);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, #1e3a8a, #1512c7);
+    box-shadow: 0 0 10px rgba(30, 58, 138, 0.3);
   }
 
   ::-webkit-scrollbar-corner {
-    background: rgba(240, 253, 250, 0.3);
+    background: rgba(30, 58, 138, 0.15);
   }
 
   html {
     scrollbar-width: thin;
-    scrollbar-color: #10b981 rgba(240, 253, 250, 0.3);
+    scrollbar-color: #1512c7 rgba(30, 58, 138, 0.15);
   }
 
   body {
